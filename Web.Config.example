@@ -21,7 +21,7 @@
     <add key="TIEMPO_NUEVO_INTENTO" value="10"></add>
   </appSettings>
 	<connectionStrings>
-		<add name="MDB" connectionString="Database=mdb;Server=172.28.7.12;User Id=reportesweb;Password=reportesweb;" providerName="System.Data.SqlClient"/>
+		<add name="MDB" connectionString="Database=mdb;Server=localhost;User Id=usr;Password=pass;" providerName="System.Data.SqlClient"/>
 	</connectionStrings>
 	<system.web>
 		<!-- 

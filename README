@@ -1,0 +1,5 @@
+DESCRIPCIÓN:
+------------
+
+Obtiene información de la base de datos y muestra indicadores que miden los SLA del servicio de Mesa de Ayuda.
+Se acualizar automáticamente cada cierto tiempo.
