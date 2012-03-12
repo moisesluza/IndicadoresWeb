@@ -7,10 +7,13 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" language="javascript" src="jquery-1.7.1.min.js"></script>
     <script type="text/javascript" language="javascript">
-        $(document).ready(function(){
-            update();                        
-        });
         var tiempo_actualizacion = <%= ConfigurationSettings.AppSettings["TIEMPO_ACTUALIZACION"] %>;
+        
+        $(document).ready(function(){
+            update();
+            $("#divTAct").html("Tiempo de Actualización: " + parseInt(tiempo_actualizacion)/1000/60 + " min");
+        });
+        
         function update() {
             $("#divNotice")
                 .removeClass()
@@ -475,6 +478,7 @@
                     </tbody>
                 </table>
             </div>
+            <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
             <div style="clear: both">
             </div>
         </div>
