@@ -9,13 +9,17 @@ namespace DAL
 {
     public class TiemposPorEstado
     {
+        public TiemposPorEstado()
+        {
+            string str = "nuevo string";
+        }
         public DataTable Listar_TiemposPorEstado
-            ( 
-                DateTime dtFecIni, 
-                DateTime dtFecFin, 
-                List<string> lsEstados, 
-                List<string> lsGrupos
-            )
+        ( 
+            DateTime dtFecIni, 
+            DateTime dtFecFin, 
+            List<string> lsEstados, 
+            List<string> lsGrupos
+        )
         {
             DataTable _dt = null;
             Database db = DatabaseFactory.CreateDatabase("MDB");
@@ -30,9 +34,9 @@ namespace DAL
                 "   case " +
 		        "       when p.sym = '0' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 20 " +
 		        "       when p.sym = '0' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 50 " +
-		        "        when p.sym = '1' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 35 " +
+		        "       when p.sym = '1' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 35 " +
 		        "       when p.sym = '1' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 70 " +
-		        "        when p.sym = '2' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 40 " +
+		        "       when p.sym = '2' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 40 " +
 		        "       when p.sym = '2' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 90 " +
 		        "       when p.sym = '3' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 50 " +
 		        "       when p.sym = '3' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 100 " +

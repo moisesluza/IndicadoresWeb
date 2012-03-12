@@ -18,10 +18,16 @@ public partial class REST : System.Web.UI.Page
         Response.Write("<?xml version='1.0' encoding='ISO-8859-1'?>");
         
         ReporteIndicadores objBc = ReporteIndicadores.getInstance();
+        DataSet ds = new DataSet("DATA");
 
         try
         {
             objBc.obtenerTiemposPorEstado();
+
+            ds.Tables.Add(objBc.ObtenerRptTiempoRespuestaOP());
+            ds.Tables.Add(objBc.ObtenerRptTiempoRespuestaODyOR());
+            ds.Tables.Add(objBc.ObtenerRptTiempoSolucionOP());
+            ds.Tables.Add(objBc.ObtenerRptTiempoSolucionODyOR());
         }
         catch (Exception ex)
         {
@@ -29,13 +35,6 @@ public partial class REST : System.Web.UI.Page
             Response.End();
         }
         
-        DataSet ds = new DataSet("DATA");
-        
-        ds.Tables.Add(objBc.ObtenerRptTiempoRespuestaOP());
-        ds.Tables.Add(objBc.ObtenerRptTiempoRespuestaODyOR());
-        ds.Tables.Add(objBc.ObtenerRptTiempoSolucionOP());
-        ds.Tables.Add(objBc.ObtenerRptTiempoSolucionODyOR());
-
         Response.Write(ds.GetXml());
         Response.End();
     }

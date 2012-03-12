@@ -37,7 +37,6 @@ namespace BL
 
         public DataTable ObtenerRptTiempoRespuestaOP()
         {
-            
             //Se filtran las sedes
             DataTable dtFiltrada=DataHelper.Filter(dt, "Tipo_Sede_Usuario='OP' and Estado in ('Asignado','Registrado') and Prioridad <> 'Ninguno'");
 
@@ -48,8 +47,9 @@ namespace BL
             foreach (DataRow dr in dtAgrupadaEstados.Rows)
             {
                 DataRow[] drs = dtFiltrada.Select("obj_id=" + dr["obj_id"],"Estado");
+                int.TryParse(drs[0]["tiempo"].ToString(), out iTiempoRpta);
                 //Si el tiempo en estado Asignado (drs[0]) es 0 se utiliza el tiempo en estado registrado drs[1]
-                if (int.TryParse(drs[0]["tiempo"].ToString(), out iTiempoRpta) && iTiempoRpta > 0)
+                if (drs.Length > 0 || iTiempoRpta > 0)
                     dr["tiempo"] = iTiempoRpta;
                 else
                     dr["tiempo"] = int.Parse(drs[1]["tiempo"].ToString());
@@ -94,9 +94,16 @@ namespace BL
             //Se agrupan los tiempos de los estados Asignado y en proceso
             DataTable dtAgrupadaEstados = DataHelper.Distinct(dtFiltrada, new String[] { "obj_id", "Tipo_Sede_Usuario", "Tiempo_Minimo" }, "obj_id");
             dtAgrupadaEstados.Columns.Add(new DataColumn("tiempo", typeof(int)));
+            int iTiempoRpta = 0;
             foreach (DataRow dr in dtAgrupadaEstados.Rows)
             {
-                dr["tiempo"] = dtFiltrada.Compute("Sum(tiempo)", "obj_id=" + dr["obj_id"]);
+                DataRow[] drs = dtFiltrada.Select("obj_id=" + dr["obj_id"], "Estado");
+                int.TryParse(drs[0]["tiempo"].ToString(), out iTiempoRpta);
+                //Si el tiempo en estado Asignado (drs[0]) es 0 se utiliza el tiempo en estado registrado drs[1]
+                if (drs.Length > 0 || iTiempoRpta > 0)
+                    dr["tiempo"] = iTiempoRpta;
+                else
+                    dr["tiempo"] = int.Parse(drs[1]["tiempo"].ToString());
             }
 
             //Se obtienen los valores de prioridad agrupados
