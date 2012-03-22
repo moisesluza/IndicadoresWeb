@@ -60,11 +60,14 @@
             mostrarDataPorPrioridad($("#tbTSolOP"),$(data).find("TiempoSolucionOP"));
             mostrarDataPorOficina($("#tbTRptaODyOR"),$(data).find("TiempoRespuestaODyOR"));
             mostrarDataPorOficina($("#tbTSolODyOR"),$(data).find("TiempoSolucionODyOR"));
+            mostrarDataRepNivel1($("#tbNivel1"),$(data).find("REPORTE_NIVEL_1"));
+            mostrarDataEncuestas($("#tbEncuestas"),$(data).find("RESPUESTA_ENCUESTAS"));
         }
         
         function mostrarDataPorPrioridad(tb, data){
             limpiarValores(tb);
             $(data).each(function(){
+                sla = parseInt($(this).find('SLA').text());
                 pri = parseInt($(this).find('Prioridad').text());
                 tot_tickets = $(this).find('Total_Tickets').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
@@ -72,16 +75,18 @@
                 
                 //Se obtienen las celdas donde se escribirán los valores
                 tr = $(tb).find("tbody tr")[pri]
+                tdSla = $(tr).find("td")[2];
                 tdTotTkt = $(tr).find("td")[3];
                 tdDentroSLA = $(tr).find("td")[4];
                 tdPorc = $(tr).find("td")[5];
                 tdImg = $(tr).find("td")[6];
                 var img = new Image();
                 //Se escriben los valores
+                $(tdSla).text(">=" + sla + "%");
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(parseInt(porc)>=98) 
+                if(parseInt(porc)>=sla)
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
                 else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
@@ -91,6 +96,7 @@
         function mostrarDataPorOficina(tb, data){
             limpiarValores(tb);
             $(data).each(function(i){
+                sla = parseInt($(this).find('SLA').text());
                 tipo_sede = $(this).find('Tipo_Sede_Usuario').text();
                 tot_tickets = $(this).find('Total_Tickets').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
@@ -101,15 +107,75 @@
                     tr = $(tb).find("tbody tr")[0]
                 else
                     tr = $(tb).find("tbody tr")[1]
+                tdSla = $(tr).find("td")[2];
                 tdTotTkt = $(tr).find("td")[3];
                 tdDentroSLA = $(tr).find("td")[4];
                 tdPorc = $(tr).find("td")[5];
                 tdImg = $(tr).find("td")[6];                
                 //Se escriben los valores
+                $(tdSla).text(">=" + sla + "%");
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(parseInt(porc)>=98){
+                if(parseInt(porc)>=sla){
+                    $(img).attr("src","img/verde.png").appendTo(tdImg);
+                }else 
+                    $(img).attr("src","img/rojo.png").appendTo(tdImg);
+            });
+        }
+        
+        function mostrarDataRepNivel1(tb, data){
+            limpiarValores(tb);
+            $(data).each(function(i){
+                sla = $(this).find('SLA').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                tr = $(tb).find("tbody tr")[0];   
+                tdSla = $(tr).find("td")[2];
+                tdTotTkt = $(tr).find("td")[3];
+                tdDentroSLA = $(tr).find("td")[4];
+                tdPorc = $(tr).find("td")[5];
+                tdImg = $(tr).find("td")[6];                
+                //Se escriben los valores
+                $(tdSla).text(">=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                if(parseInt(porc)>=sla){
+                    $(img).attr("src","img/verde.png").appendTo(tdImg);
+                }else 
+                    $(img).attr("src","img/rojo.png").appendTo(tdImg);
+            });
+        }
+        
+        function mostrarDataEncuestas(tb, data){
+            limpiarValores(tb);
+            $(data).each(function(i){
+                grupo = $(this).find('Grupo').text();
+                sla = $(this).find('SLA').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                if(grupo == 'PRIMER NIVEL')
+                    tr = $(tb).find("tbody tr")[0]
+                else
+                    tr = $(tb).find("tbody tr")[1]
+                tdSla = $(tr).find("td")[2];
+                tdTotTkt = $(tr).find("td")[3];
+                tdDentroSLA = $(tr).find("td")[4];
+                tdPorc = $(tr).find("td")[5];
+                tdImg = $(tr).find("td")[6];
+                //Se escriben los valores
+                $(tdSla).text(">=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                if(parseInt(porc)>=sla){
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
                 }else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
@@ -478,9 +544,113 @@
                     </tbody>
                 </table>
             </div>
-            <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
-            <div style="clear: both">
+            <div style="clear: both"></div>
+            <br />
+            <div>
+                <table id="tbNivel1">
+                    <thead>
+                        <tr>
+                            <th colspan="7" align="center">
+                                Resolución de tickets - Primer nivel</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                Grupo</th>
+                            <th>
+                                Detalle</th>
+                            <th>
+                                SLA</th>
+                            <th>
+                                Total Tickets</th>
+                            <th>
+                                Dentro de SLA</th>
+                            <th>
+                                Porcentaje</th>
+                            <th>
+                                Cumplió</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="tr1">
+                            <td>
+                                1er Nivel</td>
+                            <td>
+                                Resolución en el Primer Nivel</td>
+                            <td>
+                                &gt;=70%</td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <table id="tbEncuestas">
+                    <thead>
+                        <tr>
+                            <th colspan="7" align="center">
+                                Satisfacción de Encuestas</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                Grupo</th>
+                            <th>
+                                Detalle</th>
+                            <th>
+                                SLA</th>
+                            <th>
+                                Total Encuestas</th>
+                            <th>
+                                Encuestas Satisfactorias</th>
+                            <th>
+                                Porcentaje</th>
+                            <th>
+                                Cumplió</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="tr2">
+                            <td>
+                                1er Nivel</td>
+                            <td>
+                                Satisfacción de usuarios</td>
+                            <td>
+                                &gt;=90%</td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                2do Nivel</td>
+                            <td>
+                                Satisfacción de usuarios</td>
+                            <td>
+                                &gt;=90%</td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+            <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
+            <div style="clear: both"></div>
         </div>
     </form>
 </body>

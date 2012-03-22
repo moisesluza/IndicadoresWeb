@@ -16,18 +16,23 @@ public partial class REST : System.Web.UI.Page
     {
         Response.ContentType = "text/xml";
         Response.Write("<?xml version='1.0' encoding='ISO-8859-1'?>");
-        
-        ReporteIndicadores objBc = ReporteIndicadores.getInstance();
+
+        ReporteIndicadoresNivel2 objBcRepN2 = ReporteIndicadoresNivel2.getInstance();
+        ReporteIndicadoresNivel1 objBcRepN1 = ReporteIndicadoresNivel1.getInstance();
+        ReporteIndicadoresEncuestas objBcEnc = ReporteIndicadoresEncuestas.getInstance();
         DataSet ds = new DataSet("DATA");
 
         try
         {
-            objBc.obtenerTiemposPorEstado();
+            objBcRepN2.obtenerTiemposPorEstado();
 
-            ds.Tables.Add(objBc.ObtenerRptTiempoRespuestaOP());
-            ds.Tables.Add(objBc.ObtenerRptTiempoRespuestaODyOR());
-            ds.Tables.Add(objBc.ObtenerRptTiempoSolucionOP());
-            ds.Tables.Add(objBc.ObtenerRptTiempoSolucionODyOR());
+            ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaOP());
+            ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaODyOR());
+            ds.Tables.Add(objBcRepN2.ObtenerRptTiempoSolucionOP());
+            ds.Tables.Add(objBcRepN2.ObtenerRptTiempoSolucionODyOR());
+            ds.Tables.Add(objBcRepN1.ObtenerRtpIndicadoresNivel1());
+            ds.Tables.Add(objBcEnc.ObtenerReporteIndicadoresEncuestas());
+            
         }
         catch (Exception ex)
         {
