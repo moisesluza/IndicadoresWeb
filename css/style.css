@@ -1,0 +1,32 @@
+﻿body{margin:5px 10px 0px 10px;padding:0px;font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size:12px;}
+
+#header{margin:0px 0px 10px 0px;padding:0px;position:relative;}
+
+.info, .error{position:absolute;top:0;right:45%;font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size:12px;border: 1px solid;margin: 0px;padding:0px;}
+.info{color: #9F6000;background-color: #FEEFB3;}
+.error{color: #D8000C;background-color: #FFBABA;}
+
+TABLE{background-color:white; font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size:12px;width:100%;text-align:left;border-collapse:collapse;margin:0px;}
+TABLE th{font-size:13px;font-weight:normal;background:#b9c9fe;border-top:4px solid #aabcfe;border-bottom:1px solid #fff;color:#039;padding:8px;}
+TABLE td{background:#e8edff;border-bottom:1px solid #fff;color:#669;border-top:1px solid transparent;padding:8px;}
+TABLE tr:hover td{background:#d0dafd;color:#339;}
+
+H1{margin:0px 0px 0px 0px;padding:15px;color:#039;width:100%;position:absolute;text-align:center;}
+
+
+
+#tabs {float:left;width:100%;background-color:#fff;font-size:13px;line-height:normal;}
+#tabs ul {margin:0;	margin-top:5px;padding:5px 0px 0 30px;list-style:none;}
+#tabs li {float:left;display:block;margin:0px 0px 0px 5px;padding:5px 15px 4px 6px;}
+#tabs a {text-decoration:none;margin:0;padding:0;}
+
+.tab{background-color:#e8edff;}
+.tab a{color:#669;}
+
+.tabs_hover {background-color:#d0dafd;}
+.tabs_hover a {color:#039;}
+
+.tabs_selected {background-color:#d0dafd;}
+.tabs_selected a {color:#039;}
+
+.content {padding:10px;background-color:#d0dafd;}

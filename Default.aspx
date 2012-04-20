@@ -4,15 +4,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>OSINERGMIN - Indicadores Web</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" language="javascript" src="jquery-1.7.1.min.js"></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" src="js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" language="javascript">
         var tiempo_actualizacion = <%= ConfigurationSettings.AppSettings["TIEMPO_ACTUALIZACION"] %>;
         
         $(document).ready(function(){
-            update();
             $("#divTAct").html("Tiempo de Actualización: " + parseInt(tiempo_actualizacion)/1000/60 + " min");
+            $("#tabTickets").addClass("tabs_selected");
+            $("#divLlamadas").hide();
+            
+            $("#tabs ul li").hover(function(){$(this).addClass("tabs_hover");},function(){$(this).removeClass("tabs_hover");})
+            
+            $("#tabs ul li").click(function(){
+                $("#tabs ul li").removeClass("tabs_selected");//se eliminan las clases de todos los tab
+                $(this).addClass("tabs_selected");
+                
+                $("#tabs ul li a").each(function(){//Se ocultan todos los paneles
+                    $($(this).attr("href")).hide();
+                });                
+                $($(this).find("a").attr("href")).show();//semuestra el panel asociado al tab
+            });
+            
+            //Se asocia el evento click del li cuando se hace click en el anchor
+            $("#tabs ul li a").click(function(){
+                $(this).parent().click();
+                return false;
+            });
+            
+            //update();
         });
+        
+        
         
         function update() {
             $("#divNotice")
@@ -200,368 +223,479 @@
                 <img src="img/osinerg.png" width="342" height="65" style="float:left;" alt="NO IMG" />
                 <img src="img/gmd.png" width="64" height="65" style="float:right;" alt="NO IMG" />
                 <h1>Indicadores del Servicio de Mesa de Ayuda</h1>
-                <div style="clear: both"></div>                
+                <div style="clear: both"></div>
             </div>
-            <div style="float: left; width: 49%;">
-                <table id="tbTRptaOP">
-                    <thead>
-                        <tr>
-                            <th colspan="2">
-                                Niveles de Servicio</th>
-                            <th colspan="5">
-                                Tiempo Respuesta - Magdalena, STOR y GART</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Grupo</th>
-                            <th>
-                                Prioridad</th>
-                            <th>
-                                SLA</th>
-                            <th>
-                                Total Tickets</th>
-                            <th>
-                                Dentro de SLA</th>
-                            <th>
-                                Porcentaje</th>
-                            <th>
-                                Cumplió</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="trTRptaPri0">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 0 - 20min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTRptaPri1">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 1 - 35min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTRptaPri2">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 2 - 40min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTRptaPri3">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 3 - 50min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTRptaPri4">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 4 - 70min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <br />
-                <table id="tbTRptaODyOR">
-                    <thead>
-                        <tr>
-                            <th colspan="2">
-                                Niveles de Servicio</th>
-                            <th colspan="5">
-                                Tiempo Respuesta - Oficinas Descentralizadas y Regionales</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Grupo</th>
-                            <th>
-                                Oficinas</th>
-                            <th>
-                                SLA</th>
-                            <th>
-                                Total Tickets</th>
-                            <th>
-                                Dentro de SLA</th>
-                            <th>
-                                Porcentaje</th>
-                            <th>
-                                Cumplió</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="trTRptaOD">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Of Descentralizadas - 120min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTRptaOR">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Of Regionales - 60min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div style="float: right; width: 49%;">
-                <table id="tbTSolOP">
-                    <thead>
-                        <tr>
-                            <th colspan="2">
-                                Niveles de Servicio</th>
-                            <th colspan="5">
-                                Tiempo de Solución - Magdalena, STOR y GART</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Grupo</th>
-                            <th>
-                                Prioridad</th>
-                            <th>
-                                SLA</th>
-                            <th>
-                                Total Tickets</th>
-                            <th>
-                                Dentro de SLA</th>
-                            <th>
-                                Porcentaje</th>
-                            <th>
-                                Cumplió</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="trTSolPri0">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 0 - 50min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTSolPri1">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 1 - 70min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTSolPri2">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 2 - 90min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTSolPri3">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 3 - 100min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTSolPri4">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Prioridad 4 - 130min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <br />
-                <table id="tbTSolODyOR">
-                    <thead>
-                        <tr>
-                            <th colspan="2">
-                                Niveles de Servicio</th>
-                            <th colspan="5">
-                                Tiempo de Solución - Oficinas Descentralizadas y Regionales</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Grupo</th>
-                            <th>
-                                Oficinas</th>
-                            <th>
-                                SLA</th>
-                            <th>
-                                Total Tickets</th>
-                            <th>
-                                Dentro de SLA</th>
-                            <th>
-                                Porcentaje</th>
-                            <th>
-                                Cumplió</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="trTSolOD">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Of Descentralizadas - 120min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr id="trTSolOR">
-                            <td>
-                                2do Nivel</td>
-                            <td>
-                                Of Regionales - 120min</td>
-                            <td>
-                                &gt;=98%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="tabs">
+              <ul>
+                <li id="tabTickets" class="tab"><a href="#divTickets">Tickets</a></li>
+                <li id="tabLlamadas" class="tab"><a href="#divLlamadas">Llamadas</a></li>
+              </ul>
             </div>
             <div style="clear: both"></div>
-            <br />
-            <div>
-                <table id="tbNivel1">
+            <div id="divTickets" class="content">
+                <div style="float: left; width: 49%;">
+                    <table id="tbTRptaOP">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    Niveles de Servicio</th>
+                                <th colspan="5">
+                                    Tiempo Respuesta - Magdalena, STOR y GART</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Prioridad</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="trTRptaPri0">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 0 - 20min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTRptaPri1">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 1 - 35min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTRptaPri2">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 2 - 40min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTRptaPri3">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 3 - 50min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTRptaPri4">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 4 - 70min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table id="tbTRptaODyOR">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    Niveles de Servicio</th>
+                                <th colspan="5">
+                                    Tiempo Respuesta - Oficinas Descentralizadas y Regionales</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Oficinas</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="trTRptaOD">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Of Descentralizadas - 120min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTRptaOR">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Of Regionales - 60min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: right; width: 49%;">
+                    <table id="tbTSolOP">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    Niveles de Servicio</th>
+                                <th colspan="5">
+                                    Tiempo de Solución - Magdalena, STOR y GART</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Prioridad</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="trTSolPri0">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 0 - 50min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTSolPri1">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 1 - 70min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTSolPri2">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 2 - 90min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTSolPri3">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 3 - 100min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTSolPri4">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Prioridad 4 - 130min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table id="tbTSolODyOR">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    Niveles de Servicio</th>
+                                <th colspan="5">
+                                    Tiempo de Solución - Oficinas Descentralizadas y Regionales</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Oficinas</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="trTSolOD">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Of Descentralizadas - 120min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="trTSolOR">
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Of Regionales - 120min</td>
+                                <td>
+                                    &gt;=98%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="clear: both"></div>
+                <br />
+                <div>
+                    <table id="tbNivel1">
+                        <thead>
+                            <tr>
+                                <th colspan="7" align="center">
+                                    Resolución de tickets - Primer nivel</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Detalle</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr1">
+                                <td>
+                                    1er Nivel</td>
+                                <td>
+                                    Resolución en el Primer Nivel</td>
+                                <td>
+                                    &gt;=70%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table id="tbEncuestas">
+                        <thead>
+                            <tr>
+                                <th colspan="7" align="center">
+                                    Satisfacción de Encuestas</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Detalle</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Encuestas</th>
+                                <th>
+                                    Encuestas Satisfactorias</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr2">
+                                <td>
+                                    1er Nivel</td>
+                                <td>
+                                    Satisfacción de usuarios</td>
+                                <td>
+                                    &gt;=90%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    2do Nivel</td>
+                                <td>
+                                    Satisfacción de usuarios</td>
+                                <td>
+                                    &gt;=90%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
+                <div style="clear: both"></div>
+            </div>
+            <div id="divLlamadas" class="content">
+                <a href="#">Actualizar</a>
+                <table id="tbIndLlamadas">
                     <thead>
                         <tr>
-                            <th colspan="7" align="center">
-                                Resolución de tickets - Primer nivel</th>
-                        </tr>
-                        <tr>
                             <th>
-                                Grupo</th>
+                                Indicador</th>
                             <th>
-                                Detalle</th>
+                                Criterio de aceptación mensual</th>
                             <th>
                                 SLA</th>
                             <th>
-                                Total Tickets</th>
+                                Total Llamadas</th>
                             <th>
                                 Dentro de SLA</th>
                             <th>
@@ -571,54 +705,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id="tr1">
+                        <tr id="tr3">
                             <td>
-                                1er Nivel</td>
+                                Tiempo para Contestar una llamada Telefónica</td>
                             <td>
-                                Resolución en el Primer Nivel</td>
-                            <td>
-                                &gt;=70%</td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <br />
-                <table id="tbEncuestas">
-                    <thead>
-                        <tr>
-                            <th colspan="7" align="center">
-                                Satisfacción de Encuestas</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Grupo</th>
-                            <th>
-                                Detalle</th>
-                            <th>
-                                SLA</th>
-                            <th>
-                                Total Encuestas</th>
-                            <th>
-                                Encuestas Satisfactorias</th>
-                            <th>
-                                Porcentaje</th>
-                            <th>
-                                Cumplió</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr id="tr2">
-                            <td>
-                                1er Nivel</td>
-                            <td>
-                                Satisfacción de usuarios</td>
+                                20 segundos como máximo, luego de finalizar la locución del IVR de bienvenida.</td>
                             <td>
                                 &gt;=90%</td>
                             <td>
@@ -630,13 +721,29 @@
                             <td>
                             </td>
                         </tr>
-                        <tr>
+                        <tr id="tr4">
                             <td>
-                                2do Nivel</td>
+                                Tasa de abandono</td>
                             <td>
-                                Satisfacción de usuarios</td>
+                                Mide el porcentaje de llamadas que no llegan a ser contestadas por los agentes de la Mesa de Ayuda.</td>
                             <td>
-                                &gt;=90%</td>
+                                &lt;=10%</td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr id="tr5">
+                            <td>
+                                Tiempo de Atención del primer nivel.</td>
+                            <td>
+                                Mide el porcentaje de llamadas atendidas por los agentes del 1er nivel. 25 minutos como máximo.</td>
+                            <td>
+                                &gt;=98%</td>
                             <td>
                             </td>
                             <td>
@@ -649,8 +756,6 @@
                     </tbody>
                 </table>
             </div>
-            <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
-            <div style="clear: both"></div>
         </div>
     </form>
 </body>
