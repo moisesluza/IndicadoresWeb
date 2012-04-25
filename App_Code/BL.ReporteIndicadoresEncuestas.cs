@@ -110,7 +110,7 @@ namespace BL
         private void CalcularTotales(ref DataTable i_dtResult, DataTable i_dtDatos)
         {
             int iSlaEnc = 0;
-            int.TryParse(ConfigurationSettings.AppSettings["SLA_ENCUESTAS"].ToString(),out iSlaEnc);
+            int.TryParse(ConfigurationManager.AppSettings["SLA_ENCUESTAS"].ToString(),out iSlaEnc);
             foreach (DataRow dr in i_dtResult.Rows)
             {
                 dr["SLA"] = iSlaEnc;

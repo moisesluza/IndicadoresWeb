@@ -20,18 +20,20 @@ public partial class REST : System.Web.UI.Page
         ReporteIndicadoresNivel2 objBcRepN2 = ReporteIndicadoresNivel2.getInstance();
         ReporteIndicadoresNivel1 objBcRepN1 = ReporteIndicadoresNivel1.getInstance();
         ReporteIndicadoresEncuestas objBcEnc = ReporteIndicadoresEncuestas.getInstance();
+        ReporteIndicadoresLlamadas objBcLlam = ReporteIndicadoresLlamadas.getInstance();
         DataSet ds = new DataSet("DATA");
 
         try
         {
             objBcRepN2.obtenerTiemposPorEstado();
 
-            ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaOP());
+            /*ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaOP());
             ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaODyOR());
             ds.Tables.Add(objBcRepN2.ObtenerRptTiempoSolucionOP());
             ds.Tables.Add(objBcRepN2.ObtenerRptTiempoSolucionODyOR());
             ds.Tables.Add(objBcRepN1.ObtenerRtpIndicadoresNivel1());
-            ds.Tables.Add(objBcEnc.ObtenerReporteIndicadoresEncuestas());
+            ds.Tables.Add(objBcEnc.ObtenerReporteIndicadoresEncuestas());*/
+            ds.Tables.Add(objBcLlam.ObtenerReporteIndicadoresLlamadas());
             
         }
         catch (Exception ex)
