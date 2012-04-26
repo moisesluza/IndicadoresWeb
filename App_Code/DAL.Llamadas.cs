@@ -1,12 +1,5 @@
 using System;
 using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using System.Data.SqlClient;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 
@@ -34,17 +27,28 @@ namespace DAL
         )
         {
             DataTable _dt = null;
-            Database db = DatabaseFactory.CreateDatabase("TABLERO");
+            Database db = null;
+
+            try
+            {
+                db = DatabaseFactory.CreateDatabase("TABLERO");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se encontró la cadena de conexión para el TABLERO. Agréguela al archivo de configuración.",ex);
+            }
+            
 
             String squery =
-                "select estado,t_cola, t_talk " +
+                "select estado,t_cola, t_talk, fecha_inicio " +
                 "from detalle_llamadas " +
-                "where fecha_inicio between '{0}' and '{1}'";
+                "where fecha_inicio between '{0}' and '{1}' " +
+                "   and Datepart(weekday, fecha_inicio) not in (6,7)";//Se excluyen fines de semana
 
             System.Data.Common.DbCommand cm = db.GetSqlStringCommand(string.Format(
                 squery,
-                dtFecIni.ToString("yyyy-MM-dd"),
-                dtFecFin.ToString("yyyy-MM-dd HH:mm:ss")//Fecha con hora en formato de 24Horas
+                dtFecIni.ToString("yyyy-MM-dd HH:mm:ss"),
+                dtFecFin.ToString("yyyy-MM-dd HH:mm:ss")
             ));
 
             try

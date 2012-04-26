@@ -27,12 +27,12 @@ public partial class REST : System.Web.UI.Page
         {
             objBcRepN2.obtenerTiemposPorEstado();
 
-            /*ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaOP());
+            ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaOP());
             ds.Tables.Add(objBcRepN2.ObtenerRptTiempoRespuestaODyOR());
             ds.Tables.Add(objBcRepN2.ObtenerRptTiempoSolucionOP());
             ds.Tables.Add(objBcRepN2.ObtenerRptTiempoSolucionODyOR());
             ds.Tables.Add(objBcRepN1.ObtenerRtpIndicadoresNivel1());
-            ds.Tables.Add(objBcEnc.ObtenerReporteIndicadoresEncuestas());*/
+            ds.Tables.Add(objBcEnc.ObtenerReporteIndicadoresEncuestas());
             ds.Tables.Add(objBcLlam.ObtenerReporteIndicadoresLlamadas());
             
         }

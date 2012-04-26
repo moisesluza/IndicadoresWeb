@@ -2,12 +2,6 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using DAL;
 
 namespace BL
@@ -37,6 +31,8 @@ namespace BL
 
             dtDatos = ObtenerDetalleLlamadas();
 
+            //dtDatos = EliminarLlamadasFinSemana();
+                        
             dtDatos = ObtenerResumenLlamadas(dtDatos);
 
             DataTable dtReporte = crearTablaIndicadores(dtDatos);
@@ -56,10 +52,16 @@ namespace BL
             DateTime dtFecIni;
             DateTime dtFecFin;
             DataTable dtDatos;
+            string[] sHInicio = ConfigurationManager.AppSettings["HORA_INICIO_SERVICIO"].Split(':');
+            string[] sHFin = ConfigurationManager.AppSettings["HORA_FIN_SERVICIO"].Split(':');
+            
+            if (sHInicio.Length != 3 || sHFin.Length != 3){
+                throw new Exception("No se ha proporcionado el formato adecuado para la hora inicio o fin de servicio. El formato debe ser HH:mm:ss (24h).");
+            }
 
             objRpta = new Llamadas();
-            dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            dtFecFin = DateTime.Now;
+            dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1, int.Parse(sHInicio[0]), int.Parse(sHInicio[1]), int.Parse(sHInicio[2]));
+            dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, int.Parse(sHFin[0]), int.Parse(sHFin[1]), int.Parse(sHFin[2])); 
 
             try
             {
@@ -90,6 +92,9 @@ namespace BL
 
             int.TryParse(ConfigurationManager.AppSettings["LLAMADAS_TIEMPO_ESPERA"].ToString(), out iTiempoMaxEspera);
             int.TryParse(ConfigurationManager.AppSettings["LLAMADAS_TIEMPO_CONVERSACION"].ToString(), out iTiempoMaxConversacion);
+
+            //se convierte el tiempo de conversación a segundos
+            iTiempoMaxConversacion = iTiempoMaxConversacion * 60;
             
             /*************************************/
             //Se marcan las llamadas que:
@@ -269,6 +274,15 @@ namespace BL
             dtRep.Rows[2]["Cumple_SLA"] = i_LlamadasDuracionMenorATiempoConversacion;
             dtRep.Rows[2]["Porcentaje"] = iSLA_TiempoAtencion1erNivel;
 
+        }
+
+        private DataTable EliminarLlamadasFinSemana(DataTable dtDatos)
+        {
+            foreach (DataRow dr in dtDatos.Rows)
+            {
+                
+            }
+            return null;
         }
     }
 }

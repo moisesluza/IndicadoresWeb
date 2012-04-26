@@ -22,7 +22,15 @@ namespace DAL
         )
         {
             DataTable _dt = null;
-            Database db = DatabaseFactory.CreateDatabase("MDB");
+            Database db = null;
+            try
+            {
+                db = DatabaseFactory.CreateDatabase("MDB");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se encontró la cadena de conexión para la base de datos del Service Desk (MDB). Agréguela al archivo de configuración.", ex);
+            }    
 
             String squery =
                 "select " +

@@ -32,7 +32,7 @@
                 return false;
             });
             
-            //update();
+            update();
         });
         
         
@@ -85,6 +85,7 @@
             mostrarDataPorOficina($("#tbTSolODyOR"),$(data).find("TiempoSolucionODyOR"));
             mostrarDataRepNivel1($("#tbNivel1"),$(data).find("REPORTE_NIVEL_1"));
             mostrarDataEncuestas($("#tbEncuestas"),$(data).find("RESPUESTA_ENCUESTAS"));
+            mostrarDataLlamadas($("#tbIndLlamadas"),$(data).find("INDICADORES_LLAMADAS"));
         }
         
         function mostrarDataPorPrioridad(tb, data){
@@ -199,6 +200,35 @@
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
                 if(parseInt(porc)>=sla){
+                    $(img).attr("src","img/verde.png").appendTo(tdImg);
+                }else 
+                    $(img).attr("src","img/rojo.png").appendTo(tdImg);
+            });
+        }
+        
+        function mostrarDataLlamadas(tb, data){
+            limpiarValores(tb);
+            $(data).each(function(i){
+                sla = $(this).find('SLA').text();
+                tot_llamadas = $(this).find('Total_Llamadas').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                tr = $(tb).find("tbody tr")[i];
+                //se obtienen las celdas donde se colocorá la información
+                tdSla = $(tr).find("td")[2];
+                tdTot = $(tr).find("td")[3];
+                tdDentroSLA = $(tr).find("td")[4];
+                tdPorc = $(tr).find("td")[5];
+                tdImg = $(tr).find("td")[6];
+                //Se escriben los valores
+                cond = $(tdSla).text().substr(0,2);
+                $(tdSla).text(cond + sla + "%");
+                $(tdTot).text(tot_llamadas);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                if(eval("parseInt(porc)" + cond + "sla")){
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
                 }else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
@@ -705,13 +735,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id="tr3">
+                        <tr>
                             <td>
                                 Tiempo para Contestar una llamada Telefónica</td>
                             <td>
                                 20 segundos como máximo, luego de finalizar la locución del IVR de bienvenida.</td>
-                            <td>
-                                &gt;=90%</td>
+                            <td>&gt;=90%</td>
                             <td>
                             </td>
                             <td>
@@ -721,13 +750,11 @@
                             <td>
                             </td>
                         </tr>
-                        <tr id="tr4">
+                        <tr>
                             <td>
                                 Tasa de abandono</td>
-                            <td>
-                                Mide el porcentaje de llamadas que no llegan a ser contestadas por los agentes de la Mesa de Ayuda.</td>
-                            <td>
-                                &lt;=10%</td>
+                            <td>Mide el porcentaje de llamadas que no llegan a ser contestadas por los agentes de la Mesa de Ayuda.</td>
+                            <td>&lt;=10%</td>
                             <td>
                             </td>
                             <td>
@@ -737,13 +764,12 @@
                             <td>
                             </td>
                         </tr>
-                        <tr id="tr5">
+                        <tr>
                             <td>
                                 Tiempo de Atención del primer nivel.</td>
                             <td>
                                 Mide el porcentaje de llamadas atendidas por los agentes del 1er nivel. 25 minutos como máximo.</td>
-                            <td>
-                                &gt;=98%</td>
+                            <td>&gt;=98%</td>
                             <td>
                             </td>
                             <td>

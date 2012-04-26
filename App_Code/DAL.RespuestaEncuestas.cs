@@ -1,12 +1,6 @@
 using System;
 using System.Data;
 using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Microsoft.Practices.EnterpriseLibrary.Data;
@@ -32,7 +26,15 @@ namespace DAL
         )
         {
             DataTable _dt = null;
-            Database db = DatabaseFactory.CreateDatabase("MDB");
+            Database db = null;
+            try
+            {
+                db = DatabaseFactory.CreateDatabase("MDB");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se encontró la cadena de conexión para la base de datos del Service Desk (MDB). Agréguela al archivo de configuración.", ex);
+            }            
 
             String squery =
                 "SELECT g.last_name as Grupo, c.sequence AS SurveyAnswerSequence, c.txt AS SurveyAnswerTxt, count(cr.id) as Cantidad " +
