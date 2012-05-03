@@ -232,10 +232,10 @@ namespace BL
             
             //se calcula el sla
             if(iTotalLlamadas!=0)
-                iSLA_LlamadasContestadas = (int)((Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadas)) * 100);
+                iSLA_LlamadasContestadas = (int)((Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100);
             
             //se colocan los datos en la tabla
-            dtRep.Rows[0]["Total_Llamadas"] = iTotalLlamadas;
+            dtRep.Rows[0]["Total_Llamadas"] = iTotalLlamadasContestadas;
             dtRep.Rows[0]["Cumple_SLA"] = iTotalLlamadasContestadasAntesTiempoEspera;
             dtRep.Rows[0]["Porcentaje"] = iSLA_LlamadasContestadas;
             
