@@ -28,16 +28,18 @@ namespace BL
         public DataTable ObtenerReporteIndicadoresLlamadas()
         {
             DataTable dtDatos;
+            DataTable dtReporte = new DataTable("INDICADORES_LLAMADAS");
 
             dtDatos = ObtenerDetalleLlamadas();
 
-            //dtDatos = EliminarLlamadasFinSemana();
-                        
-            dtDatos = ObtenerResumenLlamadas(dtDatos);
+            if (dtDatos.Rows.Count != 0)
+            {
+                dtReporte = crearTablaIndicadores();
 
-            DataTable dtReporte = crearTablaIndicadores(dtDatos);
+                dtDatos = ObtenerResumenLlamadas(dtDatos);
 
-            calcularIndicadoresReporte(ref dtReporte, dtDatos);
+                calcularIndicadoresReporte(ref dtReporte, dtDatos);
+            }
 
             return dtReporte;
         }
@@ -52,20 +54,14 @@ namespace BL
             DateTime dtFecIni;
             DateTime dtFecFin;
             DataTable dtDatos;
-            string[] sHInicio = ConfigurationManager.AppSettings["HORA_INICIO_SERVICIO"].Split(':');
-            string[] sHFin = ConfigurationManager.AppSettings["HORA_FIN_SERVICIO"].Split(':');
             
-            if (sHInicio.Length != 3 || sHFin.Length != 3){
-                throw new Exception("No se ha proporcionado el formato adecuado para la hora inicio o fin de servicio. El formato debe ser HH:mm:ss (24h).");
-            }
-
             objRpta = new Llamadas();
-            dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1, int.Parse(sHInicio[0]), int.Parse(sHInicio[1]), int.Parse(sHInicio[2]));
-            dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, int.Parse(sHFin[0]), int.Parse(sHFin[1]), int.Parse(sHFin[2])); 
+            dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day,23,0,0);
 
             try
             {
-                dtDatos = objRpta.Listar_Llamadas(dtFecIni, dtFecFin);
+                dtDatos = objRpta.Listar_Llamadas(dtFecIni, dtFecFin,8,19);
             }
             catch (SqlException ex)
             {
@@ -105,7 +101,7 @@ namespace BL
             //Se agregan las columnas de marca
             dtDatos.Columns.Add(new DataColumn("TEsperaMayor", typeof(int)));
             dtDatos.Columns.Add(new DataColumn("TEsperaMenor",typeof(int)));
-            dtDatos.Columns.Add(new DataColumn("TConvMayor",typeof(int)));
+            dtDatos.Columns.Add(new DataColumn("TConvMenor", typeof(int)));
             
             //Se marcan las columnas
             foreach (DataRow dr in dtDatos.Rows)
@@ -124,9 +120,9 @@ namespace BL
                     dr["TEsperaMayor"] = 0;
 
                 if (iTiempoConversacionLlamada < iTiempoMaxConversacion)
-                    dr["TConvMayor"] = 1;
+                    dr["TConvMenor"] = 1;
                 else
-                    dr["TConvMayor"] = 0;
+                    dr["TConvMenor"] = 0;
             }
             /*************************************/
             //Se agrupa la información por estado
@@ -146,7 +142,7 @@ namespace BL
                 dr["TotalLlamadas"] = dtDatos.Compute("count(estado)", string.Format("estado={0}", dr["estado"]));
                 dr["CantLlamadasTEsperaMenor"] = dtDatos.Compute("sum(TEsperaMenor)", string.Format("estado={0}", dr["estado"]));
                 dr["CantLlamadasTEsperaMayor"] = dtDatos.Compute("sum(TEsperaMayor)", string.Format("estado={0}", dr["estado"]));
-                dr["CantLlamadasTConvMenor"] = dtDatos.Compute("sum(TConvMayor)", string.Format("estado={0}", dr["estado"]));
+                dr["CantLlamadasTConvMenor"] = dtDatos.Compute("sum(TConvMenor)", string.Format("estado={0}", dr["estado"]));
             }
 
             return dtGroup;
@@ -157,7 +153,7 @@ namespace BL
         /// </summary>
         /// <param name="dtDatos">tabla con la información de llamadas resumida por estado</param>
         /// <returns>DataTable con columnas: NombreIndicador|SLA|Total_Llamadas|Cumple_SLA|Porcentaje</returns>
-        private DataTable crearTablaIndicadores(DataTable dtDatos)
+        private DataTable crearTablaIndicadores()
         {
             int iSlaContestarLlamadas = 0;
             int iSlaTasaAbandono =0;
@@ -235,7 +231,8 @@ namespace BL
                 int.TryParse(dr[0]["CantLlamadasTEsperaMenor"].ToString(), out iTotalLlamadasContestadasAntesTiempoEspera);
             
             //se calcula el sla
-            iSLA_LlamadasContestadas = (int)((Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadas)) * 100);
+            if(iTotalLlamadas!=0)
+                iSLA_LlamadasContestadas = (int)((Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadas)) * 100);
             
             //se colocan los datos en la tabla
             dtRep.Rows[0]["Total_Llamadas"] = iTotalLlamadas;
@@ -248,7 +245,8 @@ namespace BL
             int iSLA_TasaAbandono = 0;
             
             //se calcula el sla
-            iSLA_TasaAbandono = (int)((Convert.ToDouble(iTotalLlamadasAbandonadasValidas) / Convert.ToDouble(iTotalLlamadas)) * 100);
+            if (iTotalLlamadas != 0)
+                iSLA_TasaAbandono = (int)((Convert.ToDouble(iTotalLlamadasAbandonadasValidas) / Convert.ToDouble(iTotalLlamadas)) * 100);
             
             //se colocan los datos en la tabla
             dtRep.Rows[1]["Total_Llamadas"] = iTotalLlamadas;
@@ -267,22 +265,16 @@ namespace BL
                 int.TryParse(dr[0]["CantLlamadasTConvMenor"].ToString(), out i_LlamadasDuracionMenorATiempoConversacion);
             
             //se calcula el sla
-            iSLA_TiempoAtencion1erNivel = (int)((Convert.ToDouble(i_LlamadasDuracionMenorATiempoConversacion)/Convert.ToDouble(iTotalLlamadas)) * 100);
+            if (iTotalLlamadasContestadas != 0)
+                iSLA_TiempoAtencion1erNivel = (int)((Convert.ToDouble(i_LlamadasDuracionMenorATiempoConversacion) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100);
             
             //se colocan los datos en la tabla
-            dtRep.Rows[2]["Total_Llamadas"] = iTotalLlamadas;
+            dtRep.Rows[2]["Total_Llamadas"] = iTotalLlamadasContestadas;
             dtRep.Rows[2]["Cumple_SLA"] = i_LlamadasDuracionMenorATiempoConversacion;
             dtRep.Rows[2]["Porcentaje"] = iSLA_TiempoAtencion1erNivel;
 
         }
 
-        private DataTable EliminarLlamadasFinSemana(DataTable dtDatos)
-        {
-            foreach (DataRow dr in dtDatos.Rows)
-            {
-                
-            }
-            return null;
-        }
+        
     }
 }

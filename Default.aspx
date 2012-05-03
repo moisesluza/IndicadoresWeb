@@ -228,10 +228,11 @@
                 $(tdTot).text(tot_llamadas);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(eval("parseInt(porc)" + cond + "sla")){
-                    $(img).attr("src","img/verde.png").appendTo(tdImg);
-                }else 
-                    $(img).attr("src","img/rojo.png").appendTo(tdImg);
+                if(tot_llamadas!=0)
+                    if(eval("parseInt(porc)" + cond + "sla"))
+                        $(img).attr("src","img/verde.png").appendTo(tdImg);
+                    else 
+                        $(img).attr("src","img/rojo.png").appendTo(tdImg);
             });
         }
         
@@ -714,7 +715,6 @@
                 <div style="clear: both"></div>
             </div>
             <div id="divLlamadas" class="content">
-                <a href="#">Actualizar</a>
                 <table id="tbIndLlamadas">
                     <thead>
                         <tr>

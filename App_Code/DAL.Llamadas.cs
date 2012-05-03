@@ -23,7 +23,9 @@ namespace DAL
         public DataTable Listar_Llamadas
         (
             DateTime dtFecIni,
-            DateTime dtFecFin
+            DateTime dtFecFin,
+            int iHoraIni,
+            int iHoraFin
         )
         {
             DataTable _dt = null;
@@ -43,12 +45,15 @@ namespace DAL
                 "select estado,t_cola, t_talk, fecha_inicio " +
                 "from detalle_llamadas " +
                 "where fecha_inicio between '{0}' and '{1}' " +
-                "   and Datepart(weekday, fecha_inicio) not in (6,7)";//Se excluyen fines de semana
+                "   and datepart(hour,fecha_inicio) between {2} and {3} " +
+                "   and Datepart(weekday, fecha_inicio) not in ({4},{5})";//Se excluyen fines de semana
 
             System.Data.Common.DbCommand cm = db.GetSqlStringCommand(string.Format(
                 squery,
                 dtFecIni.ToString("yyyy-MM-dd HH:mm:ss"),
-                dtFecFin.ToString("yyyy-MM-dd HH:mm:ss")
+                dtFecFin.ToString("yyyy-MM-dd HH:mm:ss"),
+                iHoraIni, iHoraFin-1,
+                1,7//días que se excluyen de la medición (sábado y domingo)
             ));
 
             try
