@@ -172,7 +172,7 @@ namespace BL
             dtRep.Columns.Add(new DataColumn("SLA", typeof(int)));
             dtRep.Columns.Add(new DataColumn("Total_Llamadas", typeof(int)));
             dtRep.Columns.Add(new DataColumn("Cumple_SLA", typeof(int)));
-            dtRep.Columns.Add(new DataColumn("Porcentaje", typeof(int)));
+            dtRep.Columns.Add(new DataColumn("Porcentaje", typeof(double)));
             
             //filas
             dr = dtRep.NewRow();
@@ -222,7 +222,7 @@ namespace BL
             /***************************************************/
             /*SLA: Tiempo para Contestar una llamada Telefónica*/
             /***************************************************/
-            int iSLA_LlamadasContestadas = 0;
+            double iSLA_LlamadasContestadas = 0;
             int iTotalLlamadasContestadasAntesTiempoEspera = 0;
             
             //se calcula la cantidad de llamadas que cumplen con el SLA
@@ -232,7 +232,7 @@ namespace BL
             
             //se calcula el sla
             if(iTotalLlamadas!=0)
-                iSLA_LlamadasContestadas = (int)((Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100);
+                iSLA_LlamadasContestadas = (Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100;
             
             //se colocan los datos en la tabla
             dtRep.Rows[0]["Total_Llamadas"] = iTotalLlamadasContestadas;
@@ -242,11 +242,11 @@ namespace BL
             /***********************/
             /*SLA: Tasa de abandono*/
             /***********************/
-            int iSLA_TasaAbandono = 0;
+            double iSLA_TasaAbandono = 0;
             
             //se calcula el sla
             if (iTotalLlamadas != 0)
-                iSLA_TasaAbandono = (int)((Convert.ToDouble(iTotalLlamadasAbandonadasValidas) / Convert.ToDouble(iTotalLlamadas)) * 100);
+                iSLA_TasaAbandono = (Convert.ToDouble(iTotalLlamadasAbandonadasValidas) / Convert.ToDouble(iTotalLlamadas)) * 100;
             
             //se colocan los datos en la tabla
             dtRep.Rows[1]["Total_Llamadas"] = iTotalLlamadas;
@@ -256,7 +256,7 @@ namespace BL
             /******************************************/
             /*SLA: Tiempo de Atención del primer nivel*/
             /******************************************/
-            int iSLA_TiempoAtencion1erNivel = 0;
+            double iSLA_TiempoAtencion1erNivel = 0;
             int i_LlamadasDuracionMenorATiempoConversacion = 0;
             
             //se calcula la cantidad de llamadas que cumplen con el SLA
@@ -266,7 +266,7 @@ namespace BL
             
             //se calcula el sla
             if (iTotalLlamadasContestadas != 0)
-                iSLA_TiempoAtencion1erNivel = (int)((Convert.ToDouble(i_LlamadasDuracionMenorATiempoConversacion) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100);
+                iSLA_TiempoAtencion1erNivel = (Convert.ToDouble(i_LlamadasDuracionMenorATiempoConversacion) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100.00;
             
             //se colocan los datos en la tabla
             dtRep.Rows[2]["Total_Llamadas"] = iTotalLlamadasContestadas;

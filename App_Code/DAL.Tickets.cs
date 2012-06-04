@@ -58,12 +58,12 @@ namespace DAL
 	            "   end as Tiempo_Minimo, " +
                 "	field_value as Estado, " +
                 "	sum(dbo.DIFFTIME(prev_time,end_time)) as tiempo " +
-                "from usp_kpi_ticket_data kpi" +
-                "	inner join call_req cr on kpi.obj_id=cr.id " +
-                "	inner join ca_contact c ON  c.contact_uuid = cr.customer " +
-                "	inner join ca_location l ON c.location_uuid = l.location_uuid " +
-                "	inner join ca_contact g ON cr.group_id = g.contact_uuid " +
-                "	inner join pri p ON cr.priority = p.enum " +
+                "from usp_kpi_ticket_data kpi with(nolock)" +
+                "	inner join call_req cr with(nolock) on kpi.obj_id=cr.id " +
+                "	inner join ca_contact c with(nolock) ON  c.contact_uuid = cr.customer " +
+                "	inner join ca_location l with(nolock) ON c.location_uuid = l.location_uuid " +
+                "	inner join ca_contact g with(nolock) ON cr.group_id = g.contact_uuid " +
+                "	inner join pri p with(nolock) ON cr.priority = p.enum " +
                 "where field_name='status' and " +
                 "	(DATEADD(ss, cr.resolve_date - 18000, '19700101') between '{0}' and '{1}' or DATEADD(ss, cr.close_date - 18000, '19700101') between '{0}' and '{1}') " +
                 "	and cr.status in ('{2}') " +
@@ -105,9 +105,9 @@ namespace DAL
             String squery =
                 "select cr.id, ctg.sym as Categoria_Ticket, gctg.last_name as Grupo_Categoria " +
                 "from call_req cr " +
-                "    inner join ca_contact g ON cr.group_id = g.contact_uuid " +
-                "    inner join prob_ctg ctg ON cr.category = ctg.persid " +
-                "    inner join ca_contact gctg ON ctg.group_id = gctg.contact_uuid " +
+                "    inner join ca_contact g with(nolock) ON cr.group_id = g.contact_uuid " +
+                "    inner join prob_ctg ctg with(nolock) ON cr.category = ctg.persid " +
+                "    inner join ca_contact gctg with(nolock) ON ctg.group_id = gctg.contact_uuid " +
                 "where " +
                 "	(DATEADD(ss, cr.resolve_date - 18000, '19700101') between '{0}' and '{1}' or DATEADD(ss, cr.close_date - 18000, '19700101') between '{0}' and '{1}') " +
                 "	and cr.status in ('{2}') " +

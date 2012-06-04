@@ -6,6 +6,8 @@
     <title>OSINERGMIN - Indicadores Web</title>
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" language="javascript" src="js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" language="javascript" src="js/jshashtable-2.1.js"></script>
+    <script type="text/javascript" language="javascript" src="js/jquery.numberformatter-1.2.3.min.js"></script>
     <script type="text/javascript" language="javascript">
         var tiempo_actualizacion = <%= ConfigurationSettings.AppSettings["TIEMPO_ACTUALIZACION"] %>;
         
@@ -227,7 +229,10 @@
                 $(tdSla).text(cond + sla + "%");
                 $(tdTot).text(tot_llamadas);
                 $(tdDentroSLA).text(cumple_sla);
-                $(tdPorc).text(porc + "%");
+                $(tdPorc).text(porc);
+                $(tdPorc).parseNumber({format:"#,###.00", locale:"us"});
+                $(tdPorc).formatNumber({format:"#,###.00", locale:"us"});
+                $(tdPorc).text($(tdPorc).text() + "%");
                 if(tot_llamadas!=0)
                     if(eval("parseInt(porc)" + cond + "sla"))
                         $(img).attr("src","img/verde.png").appendTo(tdImg);
@@ -741,13 +746,13 @@
                             <td>
                                 20 segundos como máximo, luego de finalizar la locución del IVR de bienvenida.</td>
                             <td>&gt;=90%</td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="center">
                             </td>
                         </tr>
                         <tr>
@@ -755,13 +760,13 @@
                                 Tasa de abandono</td>
                             <td>Mide el porcentaje de llamadas que no llegan a ser contestadas por los agentes de la Mesa de Ayuda.</td>
                             <td>&lt;=10%</td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="center">
                             </td>
                         </tr>
                         <tr>
@@ -770,13 +775,13 @@
                             <td>
                                 Mide el porcentaje de llamadas atendidas por los agentes del 1er nivel. 25 minutos como máximo.</td>
                             <td>&gt;=98%</td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="right">
                             </td>
-                            <td>
+                            <td align="center">
                             </td>
                         </tr>
                     </tbody>
