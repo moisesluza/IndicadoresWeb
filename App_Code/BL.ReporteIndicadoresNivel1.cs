@@ -95,7 +95,7 @@ namespace BL
                
         private void CalcularTotales(ref DataTable i_dtResult, DataTable i_dtDatos)
         {
-            DataTable dtFiltrada = DataHelper.Filter(i_dtDatos, "Grupo_Categoria='PRIMER NIVEL'");
+            DataTable dtFiltrada = DataHelper.Filter(i_dtDatos, "Grupo_Resolutor='PRIMER NIVEL'");
             i_dtResult.Rows[0]["Total_Tickets"] = i_dtDatos.Rows.Count;
             i_dtResult.Rows[0]["Cumple_SLA"] = dtFiltrada.Rows.Count;
             i_dtResult.Rows[0]["Porcentaje"] = (Convert.ToDouble(dtFiltrada.Rows.Count) / Convert.ToDouble(i_dtDatos.Rows.Count)) * 100;

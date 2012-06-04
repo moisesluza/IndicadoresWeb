@@ -103,7 +103,7 @@ namespace DAL
             Database db = DatabaseFactory.CreateDatabase("MDB");
 
             String squery =
-                "select cr.id, ctg.sym as Categoria_Ticket, gctg.last_name as Grupo_Categoria " +
+                "select cr.id, ctg.sym as Categoria_Ticket, g.last_name as Grupo_Resolutor " +
                 "from call_req cr " +
                 "    inner join ca_contact g with(nolock) ON cr.group_id = g.contact_uuid " +
                 "    inner join prob_ctg ctg with(nolock) ON cr.category = ctg.persid " +
@@ -111,7 +111,7 @@ namespace DAL
                 "where " +
                 "	(DATEADD(ss, cr.resolve_date - 18000, '19700101') between '{0}' and '{1}' or DATEADD(ss, cr.close_date - 18000, '19700101') between '{0}' and '{1}') " +
                 "	and cr.status in ('{2}') " +
-                "	and g.last_name in ('{3}') " +
+                "	and gctg.last_name in ('{3}') " +
                 "   and cr.type='I' ";
 
             System.Data.Common.DbCommand cm = db.GetSqlStringCommand(string.Format(
