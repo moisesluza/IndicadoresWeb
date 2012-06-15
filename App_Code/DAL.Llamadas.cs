@@ -43,10 +43,11 @@ namespace DAL
 
             String squery =
                 "select estado,t_cola, t_talk, fecha_inicio " +
-                "from detalle_llamadas " +
+                "from detalle_llamadas_prueba " +
                 "where fecha_inicio between '{0}' and '{1}' " +
-                "   and datepart(hour,fecha_inicio) between {2} and {3} " +
-                "   and Datepart(weekday, fecha_inicio) not in ({4},{5})";//Se excluyen fines de semana
+                "   and datepart(hour,fecha_inicio)  between {2} and {3} " +
+                "   and Datepart(weekday, fecha_inicio) not in ({4},{5}) " + //Se excluyen fines de semana
+                "   and proy = 'OSINERGMIN'";
 
             System.Data.Common.DbCommand cm = db.GetSqlStringCommand(string.Format(
                 squery,

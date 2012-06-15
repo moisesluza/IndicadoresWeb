@@ -62,7 +62,7 @@ namespace BL
             AgregarTotales(ref dtAgrupada);
 
             //Se calculan los totales
-            CalcularTotalTicketsPorPrioridad(ref dtAgrupada, dtAgrupadaEstados);
+            CalcularTotalesTicketsPorPrioridad(ref dtAgrupada, dtAgrupadaEstados);
 
             dtAgrupada.TableName = "TiempoRespuestaOP";
             return dtAgrupada; 
@@ -80,7 +80,7 @@ namespace BL
             AgregarTotales(ref dtAgrupada);
 
             //Se calculan los totales
-            CalcularTotalTicketsPorPrioridad(ref dtAgrupada, dtFiltrada);
+            CalcularTotalesTicketsPorPrioridad(ref dtAgrupada, dtFiltrada);
 
             dtAgrupada.TableName = "TiempoSolucionOP";
             return dtAgrupada;
@@ -149,6 +149,9 @@ namespace BL
             dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             dtFecFin = DateTime.Now;
 
+            //dtFecIni = new DateTime(2012, 7, 1);
+            //dtFecFin = new DateTime(2012, 7, 30);
+
             lsEstado = new List<string>();
             lsEstado.Add("CL");
             lsEstado.Add("RE");
@@ -186,7 +189,7 @@ namespace BL
             i_dtOrigen.Columns.Add("Porcentaje", typeof(int));
         }
 
-        private void CalcularTotalTicketsPorPrioridad(ref DataTable i_dtAgrupada, DataTable i_dtDatos)
+        private void CalcularTotalesTicketsPorPrioridad(ref DataTable i_dtAgrupada, DataTable i_dtDatos)
         {
             int iSla = 0;
 
@@ -204,11 +207,12 @@ namespace BL
         private void CalcularTotalesPorTipoSede(ref DataTable i_dtAgrupada, DataTable i_dtDatos)
         {
             int iSla = 0;
-            int.TryParse(ConfigurationSettings.AppSettings["SLA_TIEMPO_RESPUESTA_SOLUCION"],out iSla);
+            int.TryParse(ConfigurationManager.AppSettings["SLA_TIEMPO_RESPUESTA_SOLUCION"], out iSla);
             for (int i = 0; i < i_dtAgrupada.Rows.Count; i++)
             {
                 i_dtAgrupada.Rows[i]["SLA"] = iSla;
-                i_dtAgrupada.Rows[i]["Total_Tickets"] = i_dtDatos.Compute("Count(tiempo)", "Tipo_Sede_Usuario" + " = '" + i_dtAgrupada.Rows[i]["Tipo_Sede_Usuario"] + "'");
+                //i_dtAgrupada.Rows[i]["Total_Tickets"] = i_dtDatos.Compute("Count(tiempo)", "Tipo_Sede_Usuario" + " = '" + i_dtAgrupada.Rows[i]["Tipo_Sede_Usuario"] + "'");
+                i_dtAgrupada.Rows[i]["Total_Tickets"] = CalcularTotalTicketsPorTipoSedeODyOR(i_dtAgrupada.Rows[i]["Tipo_Sede_Usuario"].ToString());
                 i_dtAgrupada.Rows[i]["Cumple_SLA"] = i_dtDatos.Compute("Count(tiempo)", "Tipo_Sede_Usuario" + " = '" + i_dtAgrupada.Rows[i]["Tipo_Sede_Usuario"] + "' and tiempo <= " + i_dtAgrupada.Rows[i]["Tiempo_Minimo"] + "");
                 i_dtAgrupada.Rows[i]["No_Cumple_SLA"] = i_dtDatos.Compute("Count(tiempo)", "Tipo_Sede_Usuario" + " = '" + i_dtAgrupada.Rows[i]["Tipo_Sede_Usuario"] + "' and tiempo > " + i_dtAgrupada.Rows[i]["Tiempo_Minimo"] + "");
                 i_dtAgrupada.Rows[i]["Porcentaje"] = (double.Parse(i_dtAgrupada.Rows[i]["Cumple_SLA"].ToString()) / double.Parse(i_dtAgrupada.Rows[i]["Total_Tickets"].ToString())) * 100;
@@ -223,6 +227,17 @@ namespace BL
 
             //Se hace disticnt de los tickets
             DataTable dtTickets = DataHelper.Distinct(dtFiltrada, new String[] { "obj_id" }, "Prioridad");
+
+            return dtTickets.Rows.Count;
+        }
+
+        private int CalcularTotalTicketsPorTipoSedeODyOR(string i_sTipoSede)
+        {
+            //Se filtra por tipo de sede
+            DataTable dtFiltrada = DataHelper.Filter(dtNivel2, "Tipo_Sede_Usuario='" + i_sTipoSede + "'");
+
+            //Se hace disticnt de los tickets
+            DataTable dtTickets = DataHelper.Distinct(dtFiltrada, new String[] { "obj_id" }, "obj_id");
 
             return dtTickets.Rows.Count;
         }

@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Configuration;
-using System.Collections;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -9,6 +9,8 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using BL;
+
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 public partial class REST : System.Web.UI.Page
 {
@@ -38,6 +40,31 @@ public partial class REST : System.Web.UI.Page
         }
         catch (Exception ex)
         {
+            try
+            {
+                LogEntry logEntry = new LogEntry();
+                logEntry.EventId = 100;
+                logEntry.Priority = 2;
+                logEntry.Message = ex.Message;
+                logEntry.Categories.Add("Error");
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                dictionary.Add("StackTrace", ex.StackTrace);
+                dictionary.Add("Method", ex.TargetSite);
+                if (ex.InnerException != null)
+                {
+                    dictionary.Add("InnerException Message", ex.InnerException.Message);
+                    dictionary.Add("InnerException StackTrace", ex.InnerException.StackTrace);
+                    dictionary.Add("InnerException Method", ex.InnerException.TargetSite);
+                }
+                logEntry.ExtendedProperties = dictionary;
+                Logger.Write(logEntry);
+            }
+            catch (Exception ex2)
+            {
+                Response.Write("<ERROR>Ocurrió un error cuando se intentaba ggrabar el log de errores.<br/>" + ex2.Message + "</ERROR>");
+                Response.End();
+            }
+
             Response.Write("<ERROR>" + ex.Message + "</ERROR>");
             Response.End();
         }

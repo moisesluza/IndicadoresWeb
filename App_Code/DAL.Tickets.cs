@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.Common;
 using Microsoft.Practices.EnterpriseLibrary.Data;
 
 namespace DAL
@@ -30,7 +31,7 @@ namespace DAL
             catch (Exception ex)
             {
                 throw new Exception("No se encontró la cadena de conexión para la base de datos del Service Desk (MDB). Agréguela al archivo de configuración.", ex);
-            }    
+            }
 
             String squery =
                 "select " +
@@ -114,7 +115,7 @@ namespace DAL
                 "	and gctg.last_name in ('{3}') " +
                 "   and cr.type='I' ";
 
-            System.Data.Common.DbCommand cm = db.GetSqlStringCommand(string.Format(
+            DbCommand cm = db.GetSqlStringCommand(string.Format(
                 squery,
                 dtFecIni.ToString("yyyy-MM-dd"),
                 dtFecFin.ToString("yyyy-MM-dd HH:mm:ss"),//Fecha con hora en formato de 24Horas
@@ -133,6 +134,5 @@ namespace DAL
 
             return _dt;
         }
-                
     }
 }

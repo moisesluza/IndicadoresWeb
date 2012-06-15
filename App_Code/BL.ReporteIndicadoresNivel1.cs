@@ -39,7 +39,7 @@ namespace BL
             DataTable dtRep = GenerarTablaRpt();
 
             CalcularTotales(ref dtRep, dtDatos);
-
+            
             return dtRep;
         }
 

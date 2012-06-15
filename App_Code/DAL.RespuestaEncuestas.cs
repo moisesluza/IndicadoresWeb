@@ -58,7 +58,7 @@ namespace DAL
                 string.Join("','", lsEstados.ToArray()),
                 string.Join("','", lsGrupos.ToArray())
             ));
-
+            
             try
             {
                 _dt = db.ExecuteDataSet(cm).Tables[0];

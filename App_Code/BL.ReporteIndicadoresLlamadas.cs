@@ -57,11 +57,11 @@ namespace BL
             
             objRpta = new Llamadas();
             dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day,23,0,0);
+            dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
 
-            //dtFecIni = new DateTime(2012,5,1);
-            //dtFecFin = new DateTime(2012, 5, 31);
-
+            //dtFecIni = new DateTime(2012, 5, 1);
+            //dtFecFin = new DateTime(2012, 6, 13, 23, 59, 59);
+            
             try
             {
                 dtDatos = objRpta.Listar_Llamadas(dtFecIni, dtFecFin,8,19);
