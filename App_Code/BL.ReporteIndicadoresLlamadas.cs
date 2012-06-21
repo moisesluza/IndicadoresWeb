@@ -60,7 +60,7 @@ namespace BL
             dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
 
             //dtFecIni = new DateTime(2012, 5, 1);
-            //dtFecFin = new DateTime(2012, 6, 14, 23, 59, 59);
+            //dtFecFin = new DateTime(2012, 6, 20, 23, 59, 59);
             
             try
             {
@@ -117,7 +117,7 @@ namespace BL
                 else
                     dr["TEsperaMenor"] = 0;
 
-                if (iTiempoEsperaLlamada > iTiempoMaxEspera)
+                if (iTiempoEsperaLlamada >= iTiempoMaxEspera)
                     dr["TEsperaMayor"] = 1;
                 else
                     dr["TEsperaMayor"] = 0;
