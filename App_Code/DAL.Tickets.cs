@@ -70,6 +70,8 @@ namespace DAL
                 "	and cr.status in ('{2}') " +
                 "	and g.last_name in ('{3}') " +
                 "   and cr.type='I' " +
+                //se filtran los tickets que aun no tienen prev_time ya que no se les puede calcular tiempo
+                "   and obj_id not in (select distinct obj_id from usp_kpi_ticket_data where prev_time is null) " +
                 "group by obj_id, field_value, l.location_name, g.last_name, p.sym " +
                 "order by obj_id";
 
