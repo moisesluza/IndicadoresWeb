@@ -59,8 +59,8 @@ namespace BL
             dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
 
-            //dtFecIni = new DateTime(2012, 5, 1);
-            //dtFecFin = new DateTime(2012, 6, 20, 23, 59, 59);
+            //dtFecIni = new DateTime(2012, 7, 1);
+            //dtFecFin = new DateTime(2012, 8, 1);
             
             try
             {
@@ -176,6 +176,7 @@ namespace BL
             dtRep.Columns.Add(new DataColumn("Total_Llamadas", typeof(int)));
             dtRep.Columns.Add(new DataColumn("Cumple_SLA", typeof(int)));
             dtRep.Columns.Add(new DataColumn("Porcentaje", typeof(double)));
+            dtRep.Columns.Add(new DataColumn("indSLACumplido", typeof(int)));
             
             //filas
             dr = dtRep.NewRow();
@@ -203,6 +204,15 @@ namespace BL
         /// <param name="dtDatos">tabla con información resumida por estado</param>
         private void calcularIndicadoresReporte(ref DataTable dtRep, DataTable dtDatos)
         {
+            int iSlaContestarLlamadas = 0;
+            int iSlaTasaAbandono =0;
+            int iSlaTAtencion1erNivel=0;
+
+            //se obtienen los SLA's
+            int.TryParse(ConfigurationManager.AppSettings["SLA_CONTESTAR_LLAMADA"],out iSlaContestarLlamadas);
+            int.TryParse(ConfigurationManager.AppSettings["SLA_TASA_ABANDONO"],out iSlaTasaAbandono);
+            int.TryParse(ConfigurationManager.AppSettings["SLA_TIEMPO_ATENCION_1ER_NIVEL"],out iSlaTAtencion1erNivel);
+
             /***********************************************************/
             //Se calcula el total de llamadas para todos los indicadores
             /***********************************************************/
@@ -225,7 +235,7 @@ namespace BL
             /***************************************************/
             /*SLA: Tiempo para Contestar una llamada Telefónica*/
             /***************************************************/
-            double iSLA_LlamadasContestadas = 0;
+            double dPorc_LlamadasContestadas = 0;
             int iTotalLlamadasContestadasAntesTiempoEspera = 0;
             
             //se calcula la cantidad de llamadas que cumplen con el SLA
@@ -234,32 +244,39 @@ namespace BL
                 int.TryParse(dr[0]["CantLlamadasTEsperaMenor"].ToString(), out iTotalLlamadasContestadasAntesTiempoEspera);
             
             //se calcula el sla
-            if(iTotalLlamadas!=0)
-                iSLA_LlamadasContestadas = (Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100;
-            
+            if (iTotalLlamadas != 0) 
+            { 
+                dPorc_LlamadasContestadas = (Convert.ToDouble(iTotalLlamadasContestadasAntesTiempoEspera) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100;
+                dPorc_LlamadasContestadas = Math.Round(dPorc_LlamadasContestadas, 2);
+            }
             //se colocan los datos en la tabla
             dtRep.Rows[0]["Total_Llamadas"] = iTotalLlamadasContestadas;
             dtRep.Rows[0]["Cumple_SLA"] = iTotalLlamadasContestadasAntesTiempoEspera;
-            dtRep.Rows[0]["Porcentaje"] = iSLA_LlamadasContestadas;
+            dtRep.Rows[0]["Porcentaje"] = dPorc_LlamadasContestadas;
+            dtRep.Rows[0]["indSLACumplido"] = dPorc_LlamadasContestadas >= iSlaContestarLlamadas ? 1 : 0;
             
             /***********************/
             /*SLA: Tasa de abandono*/
             /***********************/
-            double iSLA_TasaAbandono = 0;
+            double dPorc_TasaAbandono = 0;
             
             //se calcula el sla
             if (iTotalLlamadas != 0)
-                iSLA_TasaAbandono = (Convert.ToDouble(iTotalLlamadasAbandonadasValidas) / Convert.ToDouble(iTotalLlamadas)) * 100;
-            
+            {
+                dPorc_TasaAbandono = (Convert.ToDouble(iTotalLlamadasAbandonadasValidas) / Convert.ToDouble(iTotalLlamadas)) * 100;
+                dPorc_TasaAbandono = Math.Round(dPorc_TasaAbandono, 2);
+            }
+
             //se colocan los datos en la tabla
             dtRep.Rows[1]["Total_Llamadas"] = iTotalLlamadas;
             dtRep.Rows[1]["Cumple_SLA"] = iTotalLlamadasAbandonadasValidas;
-            dtRep.Rows[1]["Porcentaje"] = iSLA_TasaAbandono;
+            dtRep.Rows[1]["Porcentaje"] = dPorc_TasaAbandono;
+            dtRep.Rows[1]["indSLACumplido"] = dPorc_TasaAbandono <= iSlaTasaAbandono ? 1 : 0;
             
             /******************************************/
             /*SLA: Tiempo de Atención del primer nivel*/
             /******************************************/
-            double iSLA_TiempoAtencion1erNivel = 0;
+            double dPorc_TiempoAtencion1erNivel = 0;
             int i_LlamadasDuracionMenorATiempoConversacion = 0;
             
             //se calcula la cantidad de llamadas que cumplen con el SLA
@@ -269,12 +286,15 @@ namespace BL
             
             //se calcula el sla
             if (iTotalLlamadasContestadas != 0)
-                iSLA_TiempoAtencion1erNivel = (Convert.ToDouble(i_LlamadasDuracionMenorATiempoConversacion) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100.00;
-            
+            {
+                dPorc_TiempoAtencion1erNivel = (Convert.ToDouble(i_LlamadasDuracionMenorATiempoConversacion) / Convert.ToDouble(iTotalLlamadasContestadas)) * 100.00;
+                dPorc_TiempoAtencion1erNivel = Math.Round(dPorc_TiempoAtencion1erNivel, 2);
+            }
             //se colocan los datos en la tabla
             dtRep.Rows[2]["Total_Llamadas"] = iTotalLlamadasContestadas;
             dtRep.Rows[2]["Cumple_SLA"] = i_LlamadasDuracionMenorATiempoConversacion;
-            dtRep.Rows[2]["Porcentaje"] = iSLA_TiempoAtencion1erNivel;
+            dtRep.Rows[2]["Porcentaje"] = dPorc_TiempoAtencion1erNivel;
+            dtRep.Rows[2]["indSLACumplido"] = dPorc_TiempoAtencion1erNivel >= iSlaTAtencion1erNivel ? 1 : 0;
 
         }
 

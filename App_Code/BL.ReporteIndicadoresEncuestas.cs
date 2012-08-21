@@ -56,7 +56,7 @@ namespace BL
 
             AgregarTotales(ref dtPorGrupo);
 
-            CalcularTotales(ref dtPorGrupo, dtPorGrupoRpta);
+            CalcularIndicadores(ref dtPorGrupo, dtPorGrupoRpta);
 
             dtPorGrupo.TableName = "RESPUESTA_ENCUESTAS";
             return dtPorGrupo;
@@ -73,6 +73,9 @@ namespace BL
             objRptaEnc = new RespuestaEncuestas();
             dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             dtFecFin = DateTime.Now;
+
+            //dtFecIni = new DateTime(2012, 7, 1);
+            //dtFecFin = new DateTime(2012, 8, 1);
 
             lsEstado = new List<string>();
             lsEstado.Add("CL");
@@ -105,18 +108,32 @@ namespace BL
             i_dtOrigen.Columns.Add("Total_Tickets", typeof(int));
             i_dtOrigen.Columns.Add("Cumple_SLA", typeof(int));
             i_dtOrigen.Columns.Add("Porcentaje", typeof(int));
+            i_dtOrigen.Columns.Add("indSLACumplido", typeof(int));
         }
 
-        private void CalcularTotales(ref DataTable i_dtResult, DataTable i_dtDatos)
+        private void CalcularIndicadores(ref DataTable i_dtResult, DataTable i_dtDatos)
         {
-            int iSlaEnc = 0;
-            int.TryParse(ConfigurationManager.AppSettings["SLA_ENCUESTAS"].ToString(),out iSlaEnc);
+            int iSla = 0;
+            int iTotalTkt = 0;
+            int iCumpleSLA = 0;
+            double dPorc = 0;
+            int iIndSLACumplido = 0;
+
+            int.TryParse(ConfigurationManager.AppSettings["SLA_ENCUESTAS"].ToString(),out iSla);
+
             foreach (DataRow dr in i_dtResult.Rows)
             {
-                dr["SLA"] = iSlaEnc;
-                dr["Total_Tickets"] = i_dtDatos.Compute("Sum(TOTAL)", string.Format("Grupo='{0}'", dr["Grupo"]));
-                dr["Cumple_SLA"] = i_dtDatos.Compute("Sum(TOTAL)", string.Format("Grupo='{0}' and SurveyAnswerSequence in (10,20)", dr["Grupo"])); ;
-                dr["Porcentaje"] = (Convert.ToDouble(dr["Cumple_SLA"].ToString()) / Convert.ToDouble(dr["Total_Tickets"].ToString())) * 100;
+                iTotalTkt = Convert.ToInt32(i_dtDatos.Compute("Sum(TOTAL)", string.Format("Grupo='{0}'", dr["Grupo"])));
+                iCumpleSLA = Convert.ToInt32(i_dtDatos.Compute("Sum(TOTAL)", string.Format("Grupo='{0}' and SurveyAnswerSequence in (10,20)", dr["Grupo"])));
+                dPorc = (Convert.ToDouble(iCumpleSLA) / Convert.ToDouble(iTotalTkt)) * 100;
+                dPorc = Math.Round(dPorc); 
+                iIndSLACumplido = dPorc >= iSla ? 1 : 0;
+
+                dr["SLA"] = iSla;
+                dr["Total_Tickets"] = iTotalTkt;
+                dr["Cumple_SLA"] = iCumpleSLA;
+                dr["Porcentaje"] = dPorc;
+                dr["indSLACumplido"] = iIndSLACumplido;
             }            
         }
     }

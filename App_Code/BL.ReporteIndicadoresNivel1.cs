@@ -38,7 +38,7 @@ namespace BL
 
             DataTable dtRep = GenerarTablaRpt();
 
-            CalcularTotales(ref dtRep, dtDatos);
+            CalcularIndicadores(ref dtRep, dtDatos);
             
             return dtRep;
         }
@@ -54,6 +54,9 @@ namespace BL
             objTkt = new Ticket();
             dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             dtFecFin = DateTime.Now;
+
+            //dtFecIni = new DateTime(2012, 7, 1);
+            //dtFecFin = new DateTime(2012, 8, 1);
 
             lsEstado = new List<string>();
             lsEstado.Add("CL");
@@ -85,20 +88,36 @@ namespace BL
             dtRep.Columns.Add("Total_Tickets", typeof(int));
             dtRep.Columns.Add("Cumple_SLA", typeof(int));
             dtRep.Columns.Add("Porcentaje", typeof(int));
+            dtRep.Columns.Add("indSLACumplido", typeof(int));
+
             DataRow drRep = dtRep.NewRow();
-            int iSla = 0;
-            int.TryParse(ConfigurationSettings.AppSettings["SLA_PRIMER_NIVEL"],out iSla);
-            drRep["SLA"] = iSla;
             dtRep.Rows.Add(drRep);
             return dtRep;
         }
                
-        private void CalcularTotales(ref DataTable i_dtResult, DataTable i_dtDatos)
+        private void CalcularIndicadores(ref DataTable i_dtResult, DataTable i_dtDatos)
         {
+            int iSla = 0;
+            int iTotalTkt = 0;
+            int iCumpleSLA = 0;
+            double dPorc = 0;
+            int iIndSLACumplido = 0;
+
+            int.TryParse(ConfigurationSettings.AppSettings["SLA_PRIMER_NIVEL"], out iSla);
+
             DataTable dtFiltrada = DataHelper.Filter(i_dtDatos, "Grupo_Resolutor='PRIMER NIVEL'");
-            i_dtResult.Rows[0]["Total_Tickets"] = i_dtDatos.Rows.Count;
-            i_dtResult.Rows[0]["Cumple_SLA"] = dtFiltrada.Rows.Count;
-            i_dtResult.Rows[0]["Porcentaje"] = (Convert.ToDouble(dtFiltrada.Rows.Count) / Convert.ToDouble(i_dtDatos.Rows.Count)) * 100;
+
+            iTotalTkt = i_dtDatos.Rows.Count;
+            iCumpleSLA = dtFiltrada.Rows.Count;
+            dPorc = (Convert.ToDouble(iCumpleSLA) / Convert.ToDouble(iTotalTkt)) * 100;
+            dPorc = Math.Round(dPorc);
+            iIndSLACumplido = dPorc >= iSla ? 1 : 0;
+
+            i_dtResult.Rows[0]["SLA"] = iSla;
+            i_dtResult.Rows[0]["Total_Tickets"] = iTotalTkt;
+            i_dtResult.Rows[0]["Cumple_SLA"] = iCumpleSLA;
+            i_dtResult.Rows[0]["Porcentaje"] = dPorc;
+            i_dtResult.Rows[0]["indSLACumplido"] = iIndSLACumplido;
         }
     }
 }

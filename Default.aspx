@@ -98,6 +98,7 @@
                 tot_tickets = $(this).find('Total_Tickets').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
                 porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
                 
                 //Se obtienen las celdas donde se escribirán los valores
                 tr = $(tb).find("tbody tr")[pri]
@@ -112,10 +113,11 @@
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(parseInt(porc)>=sla)
+                if(ind == 1)
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
                 else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
+                
             });
         }
         
@@ -127,6 +129,7 @@
                 tot_tickets = $(this).find('Total_Tickets').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
                 porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
                 var img = new Image();
                 //Se obtienen las celdas donde se escribirán los valores
                 if(tipo_sede == 'OD')
@@ -143,10 +146,11 @@
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(parseInt(porc)>=sla){
+                if(ind == 1)
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
-                }else 
+                else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
+                
             });
         }
         
@@ -157,6 +161,7 @@
                 tot_tickets = $(this).find('Total_Tickets').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
                 porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
                 var img = new Image();
                 //se obtiene la fila donde se mostraran los valores
                 tr = $(tb).find("tbody tr")[0];   
@@ -170,10 +175,11 @@
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(parseInt(porc)>=sla){
+                if(ind == 1)
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
-                }else 
+                else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
+                
             });
         }
         
@@ -185,6 +191,7 @@
                 tot_tickets = $(this).find('Total_Tickets').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
                 porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
                 var img = new Image();
                 //se obtiene la fila donde se mostraran los valores
                 if(grupo == 'PRIMER NIVEL')
@@ -201,10 +208,11 @@
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(parseInt(porc)>=sla){
+                if(ind == 1)
                     $(img).attr("src","img/verde.png").appendTo(tdImg);
-                }else 
+                else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
+                
             });
         }
         
@@ -215,6 +223,7 @@
                 tot_llamadas = $(this).find('Total_Llamadas').text();
                 cumple_sla = $(this).find('Cumple_SLA').text();
                 porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
                 var img = new Image();
                 //se obtiene la fila donde se mostraran los valores
                 tr = $(tb).find("tbody tr")[i];
@@ -234,9 +243,9 @@
                 $(tdPorc).formatNumber({format:"#,###.00", locale:"us"});
                 $(tdPorc).text($(tdPorc).text() + "%");
                 if(tot_llamadas!=0)
-                    if(eval("parseInt(porc)" + cond + "sla"))
+                    if(ind == 1)
                         $(img).attr("src","img/verde.png").appendTo(tdImg);
-                    else 
+                    else
                         $(img).attr("src","img/rojo.png").appendTo(tdImg);
             });
         }

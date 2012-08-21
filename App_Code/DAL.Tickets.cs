@@ -41,24 +41,24 @@ namespace DAL
                 "	g.last_name AS Grupo_Asignado, " +
                 "	p.sym AS Prioridad, " +
                 "   case " +
-		        "       when p.sym = '0' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 20 " +
-		        "       when p.sym = '0' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 50 " +
-		        "       when p.sym = '1' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 35 " +
-		        "       when p.sym = '1' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 70 " +
-		        "       when p.sym = '2' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 40 " +
-		        "       when p.sym = '2' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 90 " +
-		        "       when p.sym = '3' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 50 " +
-		        "       when p.sym = '3' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 100 " +
-		        "       when p.sym = '4' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 70 " +
-		        "       when p.sym = '4' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 130 " +
-		        "       when left(l.location_name,2) = 'OD' and field_value in ('Asignado','Registrado') then 120 " +
-                "       when left(l.location_name,2) = 'OD' and field_value = 'En Proceso' then 120 " +
-		        "       when left(l.location_name,2) = 'OR' and field_value in ('Asignado','Registrado') then 60 " +
-                "       when left(l.location_name,2) = 'OR' and field_value = 'En Proceso' then 120 " +
+		        "       when p.sym = '0' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 20*60 " +
+                "       when p.sym = '0' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 50*60 " +
+                "       when p.sym = '1' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 35*60 " +
+                "       when p.sym = '1' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 70*60 " +
+                "       when p.sym = '2' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 40*60 " +
+                "       when p.sym = '2' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 90*60 " +
+                "       when p.sym = '3' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 50*60 " +
+                "       when p.sym = '3' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 100*60 " +
+                "       when p.sym = '4' and field_value in ('Asignado','Registrado') and left(l.location_name,2)='OP' then 70*60 " +
+                "       when p.sym = '4' and field_value = 'En Proceso' and left(l.location_name,2)='OP' then 130*60 " +
+                "       when left(l.location_name,2) = 'OD' and field_value in ('Asignado','Registrado') then 120*60 " +
+                "       when left(l.location_name,2) = 'OD' and field_value = 'En Proceso' then 120*60 " +
+                "       when left(l.location_name,2) = 'OR' and field_value in ('Asignado','Registrado') then 60*60 " +
+                "       when left(l.location_name,2) = 'OR' and field_value = 'En Proceso' then 120*60 " +
 		        "       else 0 " +
 	            "   end as Tiempo_Minimo, " +
                 "	field_value as Estado, " +
-                "	sum(dbo.DIFFTIME(prev_time,end_time)) as tiempo " +
+                "	sum(dbo.DIFFTIME_segundos(DATEADD(ss, prev_time - 18000, '19700101'),DATEADD(ss, end_time - 18000, '19700101'))) as tiempo " +
                 "from usp_kpi_ticket_data kpi with(nolock)" +
                 "	inner join call_req cr with(nolock) on kpi.obj_id=cr.id " +
                 "	inner join ca_contact c with(nolock) ON  c.contact_uuid = cr.customer " +
