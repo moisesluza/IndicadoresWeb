@@ -59,8 +59,8 @@ namespace BL
             dtFecIni = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             dtFecFin = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 23, 59, 59);
 
-            //dtFecIni = new DateTime(2012, 7, 1);
-            //dtFecFin = new DateTime(2012, 8, 1);
+            //dtFecIni = new DateTime(2012, 8, 1);
+            //dtFecFin = new DateTime(2012, 8, 28);
             
             try
             {
