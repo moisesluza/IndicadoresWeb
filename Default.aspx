@@ -9,7 +9,7 @@
     <script type="text/javascript" language="javascript" src="js/jshashtable-2.1.js"></script>
     <script type="text/javascript" language="javascript" src="js/jquery.numberformatter-1.2.3.min.js"></script>
     <script type="text/javascript" language="javascript">
-        var tiempo_actualizacion = <%= ConfigurationSettings.AppSettings["TIEMPO_ACTUALIZACION"] %>;
+        var tiempo_actualizacion = <%= ConfigurationManager.AppSettings["TIEMPO_ACTUALIZACION"] %>;
         
         $(document).ready(function(){
             $("#divTAct").html("Tiempo de Actualización: " + parseInt(tiempo_actualizacion)/1000/60 + " min");
@@ -68,7 +68,7 @@
         function nuevoIntento(){
             window.setTimeout(function(){
                 $("#divNotice").hide();
-                var sec = <%= ConfigurationSettings.AppSettings["TIEMPO_NUEVO_INTENTO"] %>;
+                var sec = <%= ConfigurationManager.AppSettings["TIEMPO_NUEVO_INTENTO"] %>;
                 var timer = setInterval(function() { 
                     $("#divNotice").removeClass().addClass('info').text("Intentando nuevamente en " + (sec--) + "seg").show();
                     if (sec == -1) {

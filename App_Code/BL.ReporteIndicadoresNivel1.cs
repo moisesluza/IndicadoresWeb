@@ -103,13 +103,14 @@ namespace BL
             double dPorc = 0;
             int iIndSLACumplido = 0;
 
-            int.TryParse(ConfigurationSettings.AppSettings["SLA_PRIMER_NIVEL"], out iSla);
+            int.TryParse(ConfigurationManager.AppSettings["SLA_PRIMER_NIVEL"], out iSla);
 
             DataTable dtFiltrada = DataHelper.Filter(i_dtDatos, "Grupo_Resolutor='PRIMER NIVEL'");
 
             iTotalTkt = i_dtDatos.Rows.Count;
             iCumpleSLA = dtFiltrada.Rows.Count;
-            dPorc = (Convert.ToDouble(iCumpleSLA) / Convert.ToDouble(iTotalTkt)) * 100;
+            if(iTotalTkt!=0)
+                dPorc = (Convert.ToDouble(iCumpleSLA) / Convert.ToDouble(iTotalTkt)) * 100;
             dPorc = Math.Round(dPorc);
             iIndSLACumplido = dPorc >= iSla ? 1 : 0;
 

@@ -40,22 +40,11 @@ namespace DAL
                 throw new Exception("No se encontró la cadena de conexión para el TABLERO. Agréguela al archivo de configuración.",ex);
             }
             
-
-            String squery =
-                "select estado,t_cola, t_talk, fecha_inicio " +
-                "from detalle_llamadas_prueba " +
-                "where fecha_inicio between '{0}' and '{1}' " +
-                "   and datepart(hour,fecha_inicio)  between {2} and {3} " +
-                "   and Datepart(weekday, fecha_inicio) not in ({4},{5}) " + //Se excluyen fines de semana
-                "   and proy = 'OSINERGMIN'";
-
-            System.Data.Common.DbCommand cm = db.GetSqlStringCommand(string.Format(
-                squery,
+            System.Data.Common.DbCommand cm = db.GetStoredProcCommand(
+                "usp_obtener_llamadas",
                 dtFecIni.ToString("yyyy-MM-dd HH:mm:ss"),
                 dtFecFin.ToString("yyyy-MM-dd HH:mm:ss"),
-                iHoraIni, iHoraFin-1,
-                1,7//días que se excluyen de la medición (sábado y domingo)
-            ));
+                iHoraIni, iHoraFin-1);
 
             try
             {
