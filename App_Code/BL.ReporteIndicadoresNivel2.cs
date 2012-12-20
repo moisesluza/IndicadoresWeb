@@ -162,12 +162,8 @@ namespace BL
 
             try
             {
-                dtNivel2 = objTpE.Listar_TiemposPorEstado(dtFecIni, dtFecFin, lsEstado, lsGrupo);
-                //Comentado ya que no se ha informado si es que el error de los tickets mal registrados se solucionará 
-                //en el reporte o en la información del service desk
-                //CompletarTiempoSolucion();
-                
-                //dt = objTpE.Listar_TiemposPorEstado(new DateTime(DateTime.Today.Year, 2, 1), new DateTime(DateTime.Today.Year, 2, 29, 23, 59, 59), lsEstado, lsGrupo);
+                dtNivel2 = objTpE.Listar_TiemposPorEstado(dtFecIni, dtFecFin, lsEstado, lsGrupo, new List<string>(), "I");
+                dtNivel2 = DataHelper.Filter(dtNivel2, "Prioridad in ('0','1','2','3','4')");
             }
             catch (SqlException ex)
             {
@@ -205,7 +201,7 @@ namespace BL
             {
                 iCantTktCumpleSLA = Convert.ToInt32(i_dtDatos.Compute("Count(tiempo)", "Prioridad" + " = '" + i_dtAgrupada.Rows[i]["Prioridad"] + "' and tiempo <= " + i_dtAgrupada.Rows[i]["Tiempo_Minimo"] + ""));
                 iCantTktNoCumpleSLA = Convert.ToInt32(i_dtDatos.Compute("Count(tiempo)", "Prioridad" + " = '" + i_dtAgrupada.Rows[i]["Prioridad"] + "' and tiempo > " + i_dtAgrupada.Rows[i]["Tiempo_Minimo"] + ""));
-                iTotalTkt = CalcularTotalTicketsPorPrioridadOP(Convert.ToInt32(i_dtAgrupada.Rows[i]["Prioridad"]));
+                iTotalTkt = CalcularTotalTicketsPorPrioridadOP(i_dtAgrupada.Rows[i]["Prioridad"].ToString());
                 dPorc = (Convert.ToDouble(iCantTktCumpleSLA) / Convert.ToDouble(iTotalTkt)) * 100;
                 dPorc = Math.Round(dPorc);
                 iIndSLACumplido = dPorc >= iSla ? 1 : 0;
@@ -250,10 +246,10 @@ namespace BL
 
         }
 
-        private int CalcularTotalTicketsPorPrioridadOP(int i_iPriotidad)
+        private int CalcularTotalTicketsPorPrioridadOP(string i_sPrioridad)
         {
             //Se filtran las sedes
-            DataTable dtFiltrada = DataHelper.Filter(dtNivel2, "Tipo_Sede_Usuario='OP' and Prioridad = '" + i_iPriotidad.ToString() + "'");
+            DataTable dtFiltrada = DataHelper.Filter(dtNivel2, "Tipo_Sede_Usuario='OP' and Prioridad = '" + i_sPrioridad + "'");
 
             //Se hace disticnt de los tickets
             DataTable dtTickets = DataHelper.Distinct(dtFiltrada, new String[] { "obj_id" }, "Prioridad");
@@ -270,27 +266,7 @@ namespace BL
             DataTable dtTickets = DataHelper.Distinct(dtFiltrada, new String[] { "obj_id" }, "obj_id");
 
             return dtTickets.Rows.Count;
-        }
-
-        /// <summary>
-        /// Se encarga de completar los tiempos En Proceso para los tickets mal registrados 
-        /// (No debe existir tickets de nivel 2 sin tiempos En Proceso)
-        /// </summary>
-        private void CompletarTiempoSolucion()
-        {
-            DataTable dtTickets = DataHelper.Distinct(dtNivel2, new String[] { "obj_id" }, "Prioridad");
-            foreach (DataRow dr in dtTickets.Rows)
-            {
-                //Si el ticket no tiene tiempo "En Proceso", se crea el registro con tiempo cero
-                if (dtNivel2.Select("obj_id=" + dr["obj_id"] + " and Estado = 'En Proceso'").Length == 0)
-                {
-                    dtNivel2.ImportRow(dr);
-                    dtNivel2.Rows[dtNivel2.Rows.Count - 1]["Estado"] = "En Proceso";
-                    dtNivel2.Rows[dtNivel2.Rows.Count - 1]["tiempo"] = 0;
-                }
-            }
-            dtNivel2.AcceptChanges();
-        }
+        }        
     }
 
     
