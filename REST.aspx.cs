@@ -23,6 +23,8 @@ public partial class REST : System.Web.UI.Page
         ReporteIndicadoresNivel1 objBcRepN1 = ReporteIndicadoresNivel1.getInstance();
         ReporteIndicadoresEncuestas objBcEnc = ReporteIndicadoresEncuestas.getInstance();
         ReporteIndicadoresLlamadas objBcLlam = ReporteIndicadoresLlamadas.getInstance();
+        ReporteTiempoReqAsigPc objBcTAReq = ReporteTiempoReqAsigPc.getInstance();
+        ReporteTicketsReabiertos objTktRea = ReporteTicketsReabiertos.getInstance();
         DataSet ds = new DataSet("DATA");
 
         try
@@ -36,7 +38,14 @@ public partial class REST : System.Web.UI.Page
             ds.Tables.Add(objBcRepN1.ObtenerRtpIndicadoresNivel1());
             ds.Tables.Add(objBcEnc.ObtenerReporteIndicadoresEncuestas());
             ds.Tables.Add(objBcLlam.ObtenerReporteIndicadoresLlamadas());
-            
+            ds.Tables.Add(objBcTAReq.ObtenerRptTiempoAsignacionEquipo());
+            objTktRea.AnioCalculo = DateTime.Today.Year;
+            objTktRea.MesCalculo = DateTime.Today.Month;
+            ds.Tables.Add(objTktRea.ObtenerRtpReabiertos());
+            objTktRea.AnioCalculo = DateTime.Today.AddMonths(-1).Year;
+            objTktRea.MesCalculo = DateTime.Today.AddMonths(-1).Month;
+            ds.Tables.Add(objTktRea.ObtenerRtpReabiertos());
+            Logger.Write("prueba");
         }
         catch (Exception ex)
         {

@@ -13,13 +13,15 @@ namespace DAL
         public Ticket()
         {
         }
-
+        
         public DataTable Listar_TiemposPorEstado
-        ( 
-            DateTime dtFecIni, 
-            DateTime dtFecFin, 
-            List<string> lsEstados, 
-            List<string> lsGrupos
+        (
+            DateTime dtFecIni,
+            DateTime dtFecFin,
+            List<string> lsEstados,
+            List<string> lsGrupos,
+            List<string> lsCategorias,
+            string sTipo
         )
         {
             DataTable _dt = null;
@@ -32,13 +34,15 @@ namespace DAL
             {
                 throw new Exception("No se encontró la cadena de conexión para la base de datos del Service Desk (MDB). Agréguela al archivo de configuración.", ex);
             }
-            
+
             System.Data.Common.DbCommand cm = db.GetStoredProcCommand(
-                "usp_obtener_tiempos_por_estado_tickets", 
+                "usp_obtener_tiempos_por_estado_tickets",
                 dtFecIni.ToString("yyyy-MM-dd"),
                 dtFecFin.ToString("yyyy-MM-dd HH:mm:ss"),//Fecha con hora en formato de 24Horas
-                string.Join(",", lsEstados.ToArray()),
-                string.Join(",", lsGrupos.ToArray())
+                lsEstados.Count > 0 ? string.Join(",", lsEstados.ToArray()) : string.Empty,
+                lsGrupos.Count > 0 ? string.Join(",", lsGrupos.ToArray()) : string.Empty,
+                lsCategorias.Count > 0 ? string.Join(",", lsCategorias.ToArray()) : string.Empty,
+                string.IsNullOrEmpty(sTipo) ? string.Empty : sTipo
             );
 
             try
@@ -69,6 +73,58 @@ namespace DAL
                 dtFecFin.ToString("yyyy-MM-dd HH:mm:ss"),//Fecha con hora en formato de 24Horas
                 string.Join(",", lsEstados.ToArray()),
                 string.Join(",", lsGrupos.ToArray())
+            );
+
+            try
+            {
+                _dt = db.ExecuteDataSet(cm).Tables[0];
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+
+            return _dt;
+        }
+
+        public DataTable Listar_Ticketsx1eraFechaCierre(
+            DateTime dtFecIni,
+            DateTime dtFecFin
+        )
+        {
+            DataTable _dt = null;
+            Database db = DatabaseFactory.CreateDatabase("MDB");
+
+            DbCommand cm = db.GetStoredProcCommand(
+                "usp_obtener_ticketsXprimerafechacierre",
+                dtFecIni.ToString("yyyy-MM-dd"),
+                dtFecFin.ToString("yyyy-MM-dd")//Fecha con hora en formato de 24Horas
+            );
+
+            try
+            {
+                _dt = db.ExecuteDataSet(cm).Tables[0];
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+
+            return _dt;
+        }
+
+        public DataTable Listar_TicketsReabiertos(
+            DateTime dtFecIni,
+            DateTime dtFecFin
+        )
+        {
+            DataTable _dt = null;
+            Database db = DatabaseFactory.CreateDatabase("MDB");
+
+            DbCommand cm = db.GetStoredProcCommand(
+                "usp_obtener_tickets_reabiertos",
+                dtFecIni.ToString("yyyy-MM-dd"),
+                dtFecFin.ToString("yyyy-MM-dd")//Fecha con hora en formato de 24Horas
             );
 
             try

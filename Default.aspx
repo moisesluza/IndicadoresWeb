@@ -88,6 +88,11 @@
             mostrarDataRepNivel1($("#tbNivel1"),$(data).find("REPORTE_NIVEL_1"));
             mostrarDataEncuestas($("#tbEncuestas"),$(data).find("RESPUESTA_ENCUESTAS"));
             mostrarDataLlamadas($("#tbIndLlamadas"),$(data).find("INDICADORES_LLAMADAS"));
+            mostrarDataTAtencionReq($("#tbTAtencionReq"),$(data).find("REPORTE_TIEMPO_ATENCION_REQS"));
+            
+            limpiarValores($("#tbReabiertos"));
+            mostrarTicketsReabiertosMesActual($("#tbReabiertos"),$(data).find("REPORTE_REABIERTOS_MES_ACTUAL"));
+            mostrarTicketsReabiertosMesAnterior($("#tbReabiertos"),$(data).find("REPORTE_REABIERTOS_MES_ANTERIOR"));
         }
         
         function mostrarDataPorPrioridad(tb, data){
@@ -118,6 +123,35 @@
                 else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
                 
+            });
+        }
+        
+        function mostrarDataTAtencionReq(tb, data){
+            limpiarValores(tb);
+            $(data).each(function(i){
+                sla = $(this).find('SLA').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                tr = $(tb).find("tbody tr")[0];
+                tdSla = $(tr).find("td")[2];
+                tdTotTkt = $(tr).find("td")[3];
+                tdDentroSLA = $(tr).find("td")[4];
+                tdPorc = $(tr).find("td")[5];
+                tdImg = $(tr).find("td")[6];
+                //Se escriben los valores
+                $(tdSla).text(">=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }
             });
         }
         
@@ -175,11 +209,11 @@
                 $(tdTotTkt).text(tot_tickets);
                 $(tdDentroSLA).text(cumple_sla);
                 $(tdPorc).text(porc + "%");
-                if(ind == 1)
-                    $(img).attr("src","img/verde.png").appendTo(tdImg);
-                else 
-                    $(img).attr("src","img/rojo.png").appendTo(tdImg);
-                
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }            
             });
         }
         
@@ -213,6 +247,73 @@
                 else 
                     $(img).attr("src","img/rojo.png").appendTo(tdImg);
                 
+            });
+        }
+        
+       
+        function mostrarTicketsReabiertosMesActual(tb, data){
+            $(data).each(function(i){
+                sla = $(this).find('SLA').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
+                mes = $(this).find('Mes').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                tr = $(tb).find("tbody tr")[0];
+                tdSla = $(tr).find("td")[2];
+                tdTotTkt = $(tr).find("td")[7];
+                tdDentroSLA = $(tr).find("td")[8];
+                tdPorc = $(tr).find("td")[9];
+                tdImg = $(tr).find("td")[10];
+                thMonthTitle = $(tb).find("thead tr th ")[2];
+                //Se escriben los valores
+                $(tdSla).text("<=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }
+                $(thMonthTitle).text(mes);
+            });
+        }
+        
+        function mostrarTicketsReabiertosMesAnterior(tb, data){
+            $(data).each(function(i){
+                sla = $(this).find('SLA').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
+                mes = $(this).find('Mes').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                tr = $(tb).find("tbody tr")[0];
+                tdSla = $(tr).find("td")[2];
+                tdTotTkt = $(tr).find("td")[3];
+                tdDentroSLA = $(tr).find("td")[4];
+                tdPorc = $(tr).find("td")[5];
+                tdImg = $(tr).find("td")[6];
+                thMonthTitle = $(tb).find("thead tr th ")[1];
+                //Se escriben los valores
+                $(tdSla).text("<=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }
+                /*if(ind == 1)
+                    $(img).attr("src","img/verde.png").appendTo(tdImg);
+                else 
+                    $(img).attr("src","img/rojo.png").appendTo(tdImg);*/
+                $(thMonthTitle).text(mes);
             });
         }
         
@@ -254,6 +355,7 @@
             $(tb).find("tbody tr").each(function(){
                 $(this).find("td:gt(2)").text(0);
                 $(this).find("td:eq(6)").text("").find("img").remove();
+                $(this).find("td:eq(10)").text("").find("img").remove();
             });
         }
     </script>
@@ -623,7 +725,8 @@
                 <div style="clear: both"></div>
                 <br />
                 <div>
-                    <table id="tbNivel1">
+                    <div style="float: left; width: 49%; ">
+                        <table id="tbNivel1">
                         <thead>
                             <tr>
                                 <th colspan="7" align="center">
@@ -660,6 +763,117 @@
                                 </td>
                                 <td>
                                 </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div style="float: right; width: 49%; ">
+                    <table id="tbTAtencionReq">
+                        <thead>
+                            <tr>
+                                <th colspan="7" align="center">
+                                    Tiempo de atención de asignación de equipo</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Detalle</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr3">
+                                <td>
+                                    SOPORTE EN SITIO - LIMA</td>
+                                <td>
+                                    Tiempo total de Atención para Asignaciones de Equipos</td>
+                                <td>
+                                    &gt;=90%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+                <br/>
+                <div>
+                    <table id="tbReabiertos" >
+                        <thead>
+                            <tr>
+                                <th colspan="3" align="center">
+                                    Máximo de tickets Reabiertos en el mes</th>
+                                <th align="center" colspan="4">
+                                    Mes anterior</th>
+                                <th align="center" colspan="4">
+                                    Mes actual</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Grupo</th>
+                                <th>
+                                    Detalle</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Tickets Reaperturados</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Tickets Reaperturados</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="Tr5">
+                                <td>
+                                    Grupos resolutores de responsabilidad de GMD</td>
+                                <td>
+                                    Máximo de tickets Reabiertos en el mes</td>
+                                <td>
+                                    &gt;=10%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
                                 <td>
                                 </td>
                             </tr>

@@ -101,18 +101,20 @@ namespace BL
             int iTotalTkt = 0;
             int iCumpleSLA = 0;
             double dPorc = 0;
-            int iIndSLACumplido = 0;
+            int iIndSLACumplido = -1;
 
             int.TryParse(ConfigurationManager.AppSettings["SLA_PRIMER_NIVEL"], out iSla);
 
+            //Esa columna se debe llamar Grupo Asignado no grupo Grupo resolutor
             DataTable dtFiltrada = DataHelper.Filter(i_dtDatos, "Grupo_Resolutor='PRIMER NIVEL'");
 
             iTotalTkt = i_dtDatos.Rows.Count;
             iCumpleSLA = dtFiltrada.Rows.Count;
-            if(iTotalTkt!=0)
+            if(iTotalTkt!=0){
                 dPorc = (Convert.ToDouble(iCumpleSLA) / Convert.ToDouble(iTotalTkt)) * 100;
-            dPorc = Math.Round(dPorc);
-            iIndSLACumplido = dPorc >= iSla ? 1 : 0;
+                dPorc = Math.Round(dPorc);
+                iIndSLACumplido = dPorc >= iSla ? 1 : 0;
+            }
 
             i_dtResult.Rows[0]["SLA"] = iSla;
             i_dtResult.Rows[0]["Total_Tickets"] = iTotalTkt;
