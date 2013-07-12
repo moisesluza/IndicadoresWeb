@@ -25,6 +25,8 @@ public partial class REST : System.Web.UI.Page
         ReporteIndicadoresLlamadas objBcLlam = ReporteIndicadoresLlamadas.getInstance();
         ReporteTiempoReqAsigPc objBcTAReq = ReporteTiempoReqAsigPc.getInstance();
         ReporteTicketsReabiertos objTktRea = ReporteTicketsReabiertos.getInstance();
+        IndicadoresIngenieria objIndIng = IndicadoresIngenieria.getInstance();
+        IndicadorCanceladosPorDuplicidad objIndCxD = IndicadorCanceladosPorDuplicidad.getInstance();
         DataSet ds = new DataSet("DATA");
 
         try
@@ -45,7 +47,13 @@ public partial class REST : System.Web.UI.Page
             objTktRea.AnioCalculo = DateTime.Today.AddMonths(-1).Year;
             objTktRea.MesCalculo = DateTime.Today.AddMonths(-1).Month;
             ds.Tables.Add(objTktRea.ObtenerRtpReabiertos());
-            Logger.Write("prueba");
+
+            objIndIng.obtenerTickets();
+            ds.Tables.Add(objIndIng.ObtenerIndicadoresTS());
+            ds.Tables.Add(objIndIng.ObtenerIndicadoresTR());
+
+            ds.Tables.Add(objIndCxD.ObtenerIndicadorCanceladosPorDuplicidad());
+            
         }
         catch (Exception ex)
         {

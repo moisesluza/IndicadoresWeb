@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Todos los tiempos están expresados en minutos-->
+<SLO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>0-l</Prioridad>
+    <TiempoRespuesta>10</TiempoRespuesta>
+    <TiempoSolucion>60</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>1-l</Prioridad>
+    <TiempoRespuesta>20</TiempoRespuesta>
+    <TiempoSolucion>120</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>2-l</Prioridad>
+    <TiempoRespuesta>20</TiempoRespuesta>
+    <TiempoSolucion>240</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>3-l</Prioridad>
+    <TiempoRespuesta>20</TiempoRespuesta>
+    <TiempoSolucion>360</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>0-lfh</Prioridad>
+    <TiempoRespuesta>15</TiempoRespuesta>
+    <TiempoSolucion>180</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>1-lfh</Prioridad>
+    <TiempoRespuesta>60</TiempoRespuesta>
+    <TiempoSolucion>360</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>2-lfh</Prioridad>
+    <TiempoRespuesta>180</TiempoRespuesta>
+    <TiempoSolucion>480</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+  <TIEMPO_OBJETIVO>
+    <Prioridad>3-lfh</Prioridad>
+    <TiempoRespuesta>480</TiempoRespuesta>
+    <TiempoSolucion>1440</TiempoSolucion>
+  </TIEMPO_OBJETIVO>
+</SLO>

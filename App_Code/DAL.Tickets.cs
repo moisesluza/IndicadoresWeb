@@ -87,6 +87,34 @@ namespace DAL
             return _dt;
         }
 
+        public DataTable Listar_TicketsCreadosoCanceladosPorDuplicidad(
+            DateTime dtFecIni,
+            DateTime dtFecFin,
+            List<string> lsTipos
+        )
+        {
+            DataTable _dt = null;
+            Database db = DatabaseFactory.CreateDatabase("MDB");
+
+            DbCommand cm = db.GetStoredProcCommand(
+                "usp_obtener_tickets_CreadosyCanceladosxDuplic",
+                dtFecIni.ToString("yyyy-MM-dd"),
+                dtFecFin.ToString("yyyy-MM-dd HH:mm:ss"),//Fecha con hora en formato de 24Horas
+                string.Join(",", lsTipos.ToArray())
+            );
+
+            try
+            {
+                _dt = db.ExecuteDataSet(cm).Tables[0];
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+
+            return _dt;
+        }
+
         public DataTable Listar_Ticketsx1eraFechaCierre(
             DateTime dtFecIni,
             DateTime dtFecFin

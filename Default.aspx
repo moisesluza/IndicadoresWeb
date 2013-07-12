@@ -15,6 +15,7 @@
             $("#divTAct").html("Tiempo de Actualización: " + parseInt(tiempo_actualizacion)/1000/60 + " min");
             $("#tabTickets").addClass("tabs_selected");
             $("#divLlamadas").hide();
+            $("#divIngenieria").hide();
             
             $("#tabs ul li").hover(function(){$(this).addClass("tabs_hover");},function(){$(this).removeClass("tabs_hover");})
             
@@ -36,8 +37,6 @@
             
             update();
         });
-        
-        
         
         function update() {
             $("#divNotice")
@@ -93,7 +92,79 @@
             limpiarValores($("#tbReabiertos"));
             mostrarTicketsReabiertosMesActual($("#tbReabiertos"),$(data).find("REPORTE_REABIERTOS_MES_ACTUAL"));
             mostrarTicketsReabiertosMesAnterior($("#tbReabiertos"),$(data).find("REPORTE_REABIERTOS_MES_ANTERIOR"));
+            
+            mostrarDataTSIng($(data).find("TS_INGENIERIA"));
+            mostrarDataTRIng($(data).find("TR_INGENIERIA"));
+            mostrarDataCancPorDuplic($("#tbCancelados"),$(data).find("INDICADOR_CANCELADOS_DUPLICIDAD"));
         }
+        
+        function mostrarDataTSIng(data){
+            limpiarValoresIngenieria($("#tbTSdh"));
+            limpiarValoresIngenieria($("#tbTSfh"));
+            $(data).each(function(){
+                sla = parseInt($(this).find('SLA').text());
+                pri = parseInt($(this).find('Prioridad').text().substr(0,1));
+                pri_desc=$(this).find('Prioridad').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
+                //Obtener celdas donde se colocaran los valores
+                var tb = esFueraHorarioOficina(pri_desc) ? $("#tbTSfh") : $("#tbTSdh");
+                tr = $(tb).find("tbody tr")[pri]
+                tdSla = $(tr).find("td")[1];
+                tdTotTkt = $(tr).find("td")[2];
+                tdDentroSLA = $(tr).find("td")[3];
+                tdPorc = $(tr).find("td")[4];
+                tdImg = $(tr).find("td")[5];
+                var img = new Image();
+                //Se escriben los valores
+                $(tdSla).text("=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }
+            });
+        }
+        
+        function mostrarDataTRIng(data){
+            limpiarValoresIngenieria($("#tbTRdh"));
+            limpiarValoresIngenieria($("#tbTRfh"));
+            $(data).each(function(){
+                sla = parseInt($(this).find('SLA').text());
+                pri = parseInt($(this).find('Prioridad').text().substr(0,1));
+                pri_desc=$(this).find('Prioridad').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
+                //Obtener celdas donde se colocaran los valores
+                var tb = esFueraHorarioOficina(pri_desc) ? $("#tbTRfh") : $("#tbTRdh");
+                tr = $(tb).find("tbody tr")[pri]
+                tdSla = $(tr).find("td")[1];
+                tdTotTkt = $(tr).find("td")[2];
+                tdDentroSLA = $(tr).find("td")[3];
+                tdPorc = $(tr).find("td")[4];
+                tdImg = $(tr).find("td")[5];
+                var img = new Image();
+                //Se escriben los valores
+                $(tdSla).text("=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }
+            });
+        }
+        
+        function esFueraHorarioOficina(pri){return pri.indexOf('lfh') != -1;}
         
         function mostrarDataPorPrioridad(tb, data){
             limpiarValores(tb);
@@ -309,10 +380,6 @@
                     case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
                     default: img = null;
                 }
-                /*if(ind == 1)
-                    $(img).attr("src","img/verde.png").appendTo(tdImg);
-                else 
-                    $(img).attr("src","img/rojo.png").appendTo(tdImg);*/
                 $(thMonthTitle).text(mes);
             });
         }
@@ -351,11 +418,47 @@
             });
         }
         
+        function mostrarDataCancPorDuplic(tb, data){
+            limpiarValores(tb);
+            $(data).each(function(i){
+                sla = $(this).find('SLA').text();
+                tot_tickets = $(this).find('Total_Tickets').text();
+                cumple_sla = $(this).find('Cumple_SLA').text();
+                porc = $(this).find('Porcentaje').text();
+                ind = $(this).find('indSLACumplido').text();
+                var img = new Image();
+                //se obtiene la fila donde se mostraran los valores
+                tr = $(tb).find("tbody tr")[0];   
+                tdSla = $(tr).find("td")[2];
+                tdTotTkt = $(tr).find("td")[3];
+                tdDentroSLA = $(tr).find("td")[4];
+                tdPorc = $(tr).find("td")[5];
+                tdImg = $(tr).find("td")[6];                
+                //Se escriben los valores
+                $(tdSla).text("<=" + sla + "%");
+                $(tdTotTkt).text(tot_tickets);
+                $(tdDentroSLA).text(cumple_sla);
+                $(tdPorc).text(porc + "%");
+                switch(ind){
+                    case "1": $(img).attr("src","img/verde.png").appendTo(tdImg); break;
+                    case "0": $(img).attr("src","img/rojo.png").appendTo(tdImg); break;
+                    default: img = null;
+                }            
+            });
+        }
+        
         function limpiarValores(tb){
             $(tb).find("tbody tr").each(function(){
                 $(this).find("td:gt(2)").text(0);
                 $(this).find("td:eq(6)").text("").find("img").remove();
                 $(this).find("td:eq(10)").text("").find("img").remove();
+            });
+        }
+        
+        function limpiarValoresIngenieria(tb){
+            $(tb).find("tbody tr").each(function(){
+                $(this).find("td:gt(1)").text(0);
+                $(this).find("td:eq(5)").text("").find("img").remove();
             });
         }
     </script>
@@ -368,7 +471,7 @@
             </div>
             <div id="header">
                 <img src="img/osinerg.png" width="342" height="65" style="float:left;" alt="NO IMG" />
-                <img src="img/gmd.png" width="64" height="65" style="float:right;" alt="NO IMG" />
+                <img src="img/gmd.png" width="130" height="65" style="float:right;" alt="NO IMG" />
                 <h1>Indicadores del Servicio de Mesa de Ayuda</h1>
                 <div style="clear: both"></div>
             </div>
@@ -376,6 +479,7 @@
               <ul>
                 <li id="tabTickets" class="tab"><a href="#divTickets">Tickets</a></li>
                 <li id="tabLlamadas" class="tab"><a href="#divLlamadas">Llamadas</a></li>
+                <li id="tabIngenieria" class="tab"><a href="#divIngenieria">Ingeniería</a></li>
               </ul>
             </div>
             <div style="clear: both"></div>
@@ -859,7 +963,7 @@
                                 <td>
                                     Máximo de tickets Reabiertos en el mes</td>
                                 <td>
-                                    &gt;=10%</td>
+                                    &gt;=1.5%</td>
                                 <td>
                                     </td>
                                 <td>
@@ -876,6 +980,46 @@
                                     </td>
                                 <td>
                                 </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table id="tbCancelados">
+                        <thead>
+                            <tr>
+                                <th colspan="7" align="center">
+                                    Tickets Cancelados por duplicidad</th>
+                            </tr>
+                            <tr>
+                                <th style="display:none;"></th>
+                                <th>
+                                    Detalle</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Tickets cancelados</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr9">
+                                <td style="display:none;"></td>
+                                <td>
+                                    Porcentaje de tickets cancelados por duplicidad</td>
+                                <td>
+                                    &lt;=0.9%</td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
@@ -939,7 +1083,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
                 <div style="clear: both"></div>
             </div>
             <div id="divLlamadas" class="content">
@@ -1010,6 +1153,336 @@
                     </tbody>
                 </table>
             </div>
+            <div id="divIngenieria" class="content">
+                <div style="float: left; width: 49%;">
+                    <table id="tbTRdh">
+                        <thead>
+                            <tr>
+                                <th colspan="6" style="text-align: center">
+                                    Tiempo de Respuesta - Dentro de horario de oficina</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Prioridad</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr4">
+                                <td>
+                                    Prioridad 0 - 10 minutos</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr id="tr6">
+                                <td>
+                                    Prioridad 1 - 20 minutos</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr id="tr7">
+                                <td>
+                                    Prioridad 2 - 20 minutos</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr id="tr8">
+                                <td>
+                                    Prioridad 3 - 20 minutos</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table id="tbTSdh">
+                        <thead>
+                            <tr>
+                                <th colspan="6" style="text-align: center">
+                                    Tiempo de Solución - Dentro de horario de oficina</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Prioridad</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr10">
+                                <td>
+                                    Prioridad 0 - 1 hora</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Prioridad 1 - 2 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr id="tr11">
+                                <td>
+                                    Prioridad 2 - 4 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Prioridad 3 - 6 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="float: right; width: 49%;">
+                    <table id="tbTRfh">
+                        <thead>
+                            <tr>
+                                <th colspan="6" style="text-align: center">
+                                    Tiempo de Respuesta - Fuera de horario de oficina</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Prioridad</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr12">
+                                <td>
+                                    Prioridad 0 - 15 minutos</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="tr13">
+                                <td>
+                                    Prioridad 1 - 1 hora</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="tr14">
+                                <td>
+                                    Prioridad 2 - 3 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr id="tr15">
+                                <td>
+                                    Prioridad 3 - 8 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table id="tbTSfh">
+                        <thead>
+                            <tr>
+                                <th colspan="6" style="text-align: center">
+                                    Tiempo de Solución - Fuera de horario de oficina</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Prioridad</th>
+                                <th>
+                                    SLA</th>
+                                <th>
+                                    Total Tickets</th>
+                                <th>
+                                    Dentro de SLA</th>
+                                <th>
+                                    Porcentaje</th>
+                                <th>
+                                    Cumplió</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="tr17">
+                                <td>
+                                    Prioridad 0 - 3 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr id="tr18">
+                                <td>
+                                    Prioridad 1- 6 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Prioridad 2 - 8 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Prioridad 3 - 24 horas</td>
+                                <td>
+                                    =100%</td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                                <td>
+                                    </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            <div id="divTAct" style="float:right;">Tiempo de Actualización: 10 seg</div>
         </div>
     </form>
 </body>
